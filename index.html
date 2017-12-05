@@ -16,7 +16,39 @@
     <div class="container">
         <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
         <div class="user-info hidden"></div>
-        <button class="rsvp btn btn-default" data-toggle="tooltip" data-placement="top" title="You must be signed in to RSVP">RSVP</button>
+        <button class="rsvp btn btn-default" data-artist="Converge" data-date="12/25/2017" data-venue="The Agora" rel="tooltip" data-target="#rsvpModal" data-placement="top" title="You must be signed in to RSVP">RSVP</button>
+        <div class="modal fade" id="rsvpModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="rsvpModalHeader">RSVP</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="rsvpForm">
+                            <div>
+                                <strong>Name:</strong><br>
+                                <span id="rsvpName"></span>
+                            </div>
+                            <div id="showDetails">
+                                <strong>Show Details:</strong><br>
+                                <span id="rsvpArtistName"></span><br>
+                                <span id="rsvpShowDate"></span><br>
+                                <span id="rsvpShowVenue"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="message-text" class="control-label">Add a Message:</label>
+                                <textarea class="form-control" id="message-text"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary">Submit RSVP</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
     <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
@@ -25,10 +57,11 @@
     <script src="assets/javascript/app.js"></script>
     <script>
         var id_token = '';
+        var name = '';
         function onSignIn(googleUser) {
             var profile = googleUser.getBasicProfile();
             var id = profile.getId();
-            var name = profile.getName();
+            name = profile.getName();
             var imageUrl = profile.getImageUrl();
             var email = profile.getEmail();
             // The ID token you need to pass to your backend:
@@ -58,12 +91,23 @@
             $('.user-info').empty().addClass('hidden');
         }
 
+        $('#rsvpModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var artist = button.data('artist');
+            var showDate = button.data('date');
+            var venue = button.data('venue');
+            var modal = $(this);
+            modal.find('#rsvpName').text(name);
+            modal.find('.modal-title').text('RSVP for ' + artist);
+            modal.find('#rsvpArtistName').text(artist);
+            modal.find('#rsvpShowDate').text(showDate);
+            modal.find('#rsvpShowVenue').text(venue);
+         })
+
         $(document).ready(function() {            
             $('body').on('click', '.rsvp', function() {
                 if (id_token.length) {
-                    console.log('You are logged in.');
-                } else {
-                    console.log('You are NOT logged in.');
+                    $('#rsvpModal').modal('toggle', $(this));
                 }
             });
             $('body').on('click', '.sign-out', function() {

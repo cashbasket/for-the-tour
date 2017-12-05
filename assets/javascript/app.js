@@ -10,5 +10,5 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 $(document).ready(function() {
-	$('[data-toggle="tooltip"]').tooltip();
+	$('[rel="tooltip"]').tooltip();
 });
