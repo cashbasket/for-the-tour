@@ -13,27 +13,63 @@
 	<link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
-    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
     <div class="container">
-        <p>Hello, world!</p>
+        <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+        <div class="user-info hidden"></div>
+        <button class="rsvp btn btn-default" data-toggle="tooltip" data-placement="top" title="You must be signed in to RSVP">RSVP</button>
     </div>
-    <script>
-        function onSignIn(googleUser) {
-            var profile = googleUser.getBasicProfile();
-            console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-            console.log('Name: ' + profile.getName());
-            console.log('Image URL: ' + profile.getImageUrl());
-            console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-
-            // The ID token you need to pass to your backend:
-            var id_token = googleUser.getAuthResponse().id_token;
-            console.log("ID Token: " + id_token);
-        }
-    </script> 
     <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
     <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="assets/javascript/app.js"></script>
+    <script>
+        var id_token = '';
+        function onSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            var id = profile.getId();
+            var name = profile.getName();
+            var imageUrl = profile.getImageUrl();
+            var email = profile.getEmail();
+            // The ID token you need to pass to your backend:
+            id_token = googleUser.getAuthResponse().id_token;
+
+            $('.rsvp').removeAttr('data-toggle')
+                .removeAttr('data-placement')
+                .removeAttr('data-original-title');
+            
+            if (id_token.length) {
+                $('.user-info').html('You are logged in as <strong>' + name + '</strong> (Not you? <a class="sign-out">Sign Out</a>)');
+                $('.g-signin2').hide();
+                $('.user-info').removeClass('hidden');
+            }
+        }
+        function signOut() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+                $('.rsvp').attr('data-toggle', 'tooltip')
+                    .attr('data-placement', 'top')
+                    .attr('data-original-title', 'You must be signed in to RSVP');
+            });
+            // reset id token to empty string
+            id_token='';
+            // hide user info and show sign-in button
+            $('.g-signin2').show();
+            $('.user-info').empty().addClass('hidden');
+        }
+
+        $(document).ready(function() {            
+            $('body').on('click', '.rsvp', function() {
+                if (id_token.length) {
+                    console.log('You are logged in.');
+                } else {
+                    console.log('You are NOT logged in.');
+                }
+            });
+            $('body').on('click', '.sign-out', function() {
+                signOut();
+            });
+        });
+    </script> 
 </body>
 </html>

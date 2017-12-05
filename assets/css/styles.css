@@ -1,0 +1,8 @@
+strong {
+    font-weight: bold;
+}
+
+.sign-out {
+    cursor: pointer;
+    text-decoration: underline;
+}
