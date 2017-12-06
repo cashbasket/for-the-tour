@@ -6,3 +6,17 @@ strong {
     cursor: pointer;
     text-decoration: underline;
 }
+
+.navbar {
+	color:white;
+	font-size: 40px;
+}
+
+.logo {
+	width: 66px;
+	height: 57px;
+}
+
+.navbar {
+	font-family: sans-serif;
+}
