@@ -41,10 +41,22 @@
         </form>
 
         <div id="results" class="hidden">
-            <table id="resultsTable" class="table table-striped"><tbody></tbody></table>
+            <div class="results-table-wrapper">
+                <table id="resultsTable" class="table table-striped results-table">
+                    <thead>
+                        <tr>
+                            <th>Artist(s)</th>
+                            <th>Date &amp; Time</th>
+                            <th>Venue</th>
+                            <th>City/Region</th>
+                            <th>Country</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
-
-        <button class="rsvp btn btn-default" data-artist="Converge" data-date="12/25/2017" data-venue="The Agora" rel="tooltip" data-target="#rsvpModal" data-placement="top" title="You must be signed in to RSVP">RSVP</button>
         
         <div class="modal fade" id="rsvpModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
             <div class="modal-dialog" role="document">
@@ -111,7 +123,7 @@
         function signOut() {
             var auth2 = gapi.auth2.getAuthInstance();
             auth2.signOut().then(function () {
-                $('.rsvp').attr('data-toggle', 'tooltip')
+                $('.rsvp').attr('rel', 'tooltip')
                     .attr('data-placement', 'top')
                     .attr('data-original-title', 'You must be signed in to RSVP');
             });
