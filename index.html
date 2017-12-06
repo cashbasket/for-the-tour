@@ -24,6 +24,10 @@
             <button type="submit" class="btn btn-primary">Search</button>
         </form>
 
+        <div id="results" class="hidden">
+            <table id="resultsTable" class="table table-striped"><tbody></tbody></table>
+        </div>
+
         <button class="rsvp btn btn-default" data-artist="Converge" data-date="12/25/2017" data-venue="The Agora" rel="tooltip" data-target="#rsvpModal" data-placement="top" title="You must be signed in to RSVP">RSVP</button>
         
         <div class="modal fade" id="rsvpModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
@@ -43,7 +47,9 @@
                                 <strong>Show Details:</strong><br>
                                 <span id="rsvpArtistName"></span><br>
                                 <span id="rsvpShowDate"></span><br>
-                                <span id="rsvpShowVenue"></span>
+                                <span id="rsvpShowVenue"></span><br>
+                                <span id="rsvpCity"></span><span id="rsvpRegion"></span><br>
+                                <span id="rsvpCountry"></span>
                             </div>
                             <div class="form-group">
                                 <label for="message-text" class="control-label">Add a Message:</label>
