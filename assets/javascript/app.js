@@ -11,4 +11,20 @@ firebase.initializeApp(firebaseConfig);
 
 $(document).ready(function() {
 	$('[rel="tooltip"]').tooltip();
+
+	$('#searchForm').on('submit', function(event) {
+		event.preventDefault();
+		var band = $('#bandName').val().trim();
+		if (band.length) {
+			$.ajax('https://rest.bandsintown.com/artists/' + encodeURIComponent(band) + '/events?app_id=for-the-tour')
+				.done(function (response) {
+					console.log(response);
+				})
+				.fail(function (error) {
+					console.log(error);
+				});
+		} else {
+			$('#bandName').val('');
+		}
+	});
 });
