@@ -16,7 +16,16 @@
     <div class="container">
         <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
         <div class="user-info hidden"></div>
+
+        <form id="searchForm" class="form-inline">
+            <div class="form-group">
+                <input type="text" id="bandName" placeholder="Enter Band Name" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+
         <button class="rsvp btn btn-default" data-artist="Converge" data-date="12/25/2017" data-venue="The Agora" rel="tooltip" data-target="#rsvpModal" data-placement="top" title="You must be signed in to RSVP">RSVP</button>
+        
         <div class="modal fade" id="rsvpModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
