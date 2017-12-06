@@ -2,6 +2,10 @@ strong {
     font-weight: bold;
 }
 
+em {
+	font-style: italic;
+}
+
 .sign-out {
     cursor: pointer;
     text-decoration: underline;
@@ -29,4 +33,18 @@ strong {
 	background-color: #666;
 	color: #fff;
 	font-weight: bold;
+}
+
+#rsvpModal h4 {
+	font-weight: bold;
+	margin-bottom: 6px;
+}
+
+#userDetails,
+#showDetails {
+	margin-bottom: 1em;
+}
+
+#messageText {
+	height: 130px;
 }
