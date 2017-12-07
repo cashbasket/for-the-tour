@@ -93,7 +93,7 @@ $(document).ready(function() {
 												moment(curEvent.start.datetime).format('M/D/YYYY @ h:mma');
 											var lineup = '';
 											var location = curEvent.location.city;
-											var venue = curEvent.venue !== undefined ? curEvent.venue.displayName : 'TBA';
+											var venue = curEvent.venue.displayName !== 'Unknown venue'? curEvent.venue.displayName : 'TBA';
 	
 											for (var l=0; l < curEvent.performance.length; l++) {
 												if (curEvent.performance.length > 20) {
@@ -124,6 +124,7 @@ $(document).ready(function() {
 												.attr('data-lineup', lineup)
 												.attr('data-date', curEvent.start.datetime == null ? curEvent.start.date : curEvent.start.datetime)
 												.attr('data-venue-id', curEvent.venue.id)
+												.attr('data-venue-name', curEvent.venue.displayname)
 												.attr('data-state', curEvent.venue.metroArea.state == undefined ? '' : curEvent.venue.metroArea.state.displayName)
 												.attr('data-target', '#rsvpModal')
 												.text('RSVP');
@@ -163,9 +164,9 @@ $(document).ready(function() {
 		$('#onRSVP').addClass('hidden');
 		var button = $(event.relatedTarget);
 		var venueId = button.data('venue-id');
-
-		if (venueId) {
-			var venueName, street, zip, city, country;
+		var venueName = button.data('venue-name');
+		var street, zip, city, country;
+		if (venueId && venueName !== 'Unknown venue') {
 			$.ajax('http://api.songkick.com/api/3.0/venues/' + button.data('venue-id') + '.json?apikey=' + apiKey)
 				.done(function (response) {
 					var curVenue = response.resultsPage.results.venue;
@@ -189,9 +190,9 @@ $(document).ready(function() {
 					$('#results').append('<p class="apiError">An error occurred while retrieving event data from the API :(');
 				});
 		} else {
-			modal.find('#rsvpShowVenue').text('TBA');
-		}
-		
+			$('#rsvpShowVenue').text('TBA');
+		}		
+
 		var id = button.data('id');
 		var uri = button.data('uri');
 		var title = button.data('title');
