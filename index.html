@@ -51,8 +51,7 @@
                             <th>Artist(s)</th>
                             <th>Date &amp; Time</th>
                             <th>Venue</th>
-                            <th>City/Region</th>
-                            <th>Country</th>
+                            <th>Location</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -67,8 +66,10 @@
                     <form id="rsvpForm">
                         <div class="modal-body">
                             <input type="hidden" id="eventId" />
+                            <input type="hidden" ide="eventUri" />
                             <input type="hidden" id="datetime" />
                             <div id="userDetails">
+                                <div id="userPhoto" class="pull-right clearfix"></div>
                                 <strong>Your Name:</strong> <span id="rsvpGivenName"></span> <span id="rsvpFamilyName"></span><br>
                                 <strong>Your Email:</strong> <span id="rsvpEmail"></span>
                             </div>
@@ -77,7 +78,9 @@
                                 <span id="rsvpLineup"></span><br>
                                 <span id="rsvpShowDate"></span><br>
                                 <span id="rsvpShowVenue"></span><br>
-                                <span id="rsvpCity"></span><span id="rsvpRegion"></span><span id="rsvpCountry"></span>
+                                <span id="rsvpStreet"></span><br>
+                                <span id="rsvpCity"></span><span id="rsvpState"></span> <span id="rsvpZip"></span><br>
+                                <span id="rsvpCountry"></span>
                             </div>
                             <div class="form-group">
                                 <h4>Add an RSVP Message (<span id="charsLeft">280</span> characters remaining)</h4>
@@ -115,25 +118,54 @@
     <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="assets/javascript/app.js"></script>
     <script>
-        var id_token = '';
-        var givenName = '';
-        var familyName = '';
+        var firebaseConfig = {
+            apiKey: 'AIzaSyDs9iz9p-7I_mGuLqHUlhnz-sSQyqwgE_c',
+            authDomain: 'for-the-tour.firebaseapp.com',
+            databaseURL: 'https://for-the-tour.firebaseio.com',
+            projectId: 'for-the-tour',
+            storageBucket: 'for-the-tour.appspot.com',
+            messagingSenderId: '725149234874'
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        var isLoggedIn = false;    
         function onSignIn(googleUser) {
+            // We need to register an Observer on Firebase Auth to make sure auth is initialized.
+            var unsubscribe = firebase.auth().onAuthStateChanged(function(firebaseUser) {
+                unsubscribe();
+                // Check if we are already signed-in Firebase with the correct user.
+                if (!isUserEqual(googleUser, firebaseUser)) {
+                    // Build Firebase credential with the Google ID token.
+                    var credential = firebase.auth.GoogleAuthProvider.credential(
+                        googleUser.getAuthResponse().id_token);
+                    // Sign in with credential from the Google user.
+                    firebase.auth().signInWithCredential(credential).catch(function(error) {
+                        // Handle Errors here.
+                        var errorCode = error.code;
+                        var errorMessage = error.message;
+                        // The email of the user's account used.
+                        var email = error.email;
+                        // The firebase.auth.AuthCredential type that was used.
+                        var credential = error.credential;
+                        // ...
+                    });
+                }
+            });
             var profile = googleUser.getBasicProfile();
-            var id = profile.getId();
-            givenName = profile.getGivenName();
-            familyName = profile.getFamilyName();
-            var imageUrl = profile.getImageUrl();
+            var givenName = profile.getGivenName();
+            var familyName = profile.getFamilyName();
             var email = profile.getEmail();
+            var photo = profile.getImageUrl();
             // The ID token you need to pass to your backend:
-            id_token = googleUser.getAuthResponse().id_token;
+            var id_token = googleUser.getAuthResponse().id_token;
+            
+            if(id_token.length)
+                isLoggedIn = true;
 
             $('.rsvp').removeAttr('data-toggle')
                 .removeAttr('data-placement')
                 .removeAttr('data-original-title');
-            
             if (id_token.length) {
                 $('.user-info').html('You are logged in as <strong>' + email + '</strong> (Not you? <a class="sign-out">Sign Out</a>)');
                 $('.g-signin2').hide();
@@ -141,25 +173,39 @@
                 $('#rsvpGivenName').text(givenName);
                 $('#rsvpFamilyName').text(familyName);
                 $('#rsvpEmail').text(email);
+                $('#userPhoto').html('<img src="' + photo + '" class="img-responsive" />');
             }
+        }
+        function isUserEqual(googleUser, firebaseUser) {
+            if (firebaseUser) {
+                var providerData = firebaseUser.providerData;
+                for (var i = 0; i < providerData.length; i++) {
+                    if (providerData[i].providerId === firebase.auth.GoogleAuthProvider.PROVIDER_ID &&
+                        providerData[i].uid === googleUser.getBasicProfile().getId()) {
+                        // We don't need to reauth the Firebase connection.
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
         function signOut() {
             var auth2 = gapi.auth2.getAuthInstance();
             auth2.signOut().then(function () {
+                firebase.auth().signOut();
                 $('.rsvp').attr('rel', 'tooltip')
                     .attr('data-placement', 'top')
                     .attr('data-original-title', 'You must be signed in to RSVP');
             });
             // reset id token to empty string
-            id_token='';
+            isLoggedIn = false;
             // hide user info and show sign-in button
             $('.g-signin2').show();
             $('.user-info').empty().addClass('hidden');
         }
-
         $(document).ready(function() {            
             $('body').on('click', '.rsvp', function() {
-                if (id_token.length) {
+                if (isLoggedIn) {
                     $('#rsvpModal').modal({backdrop: 'static', keyboard: false}, $(this));
                 }
             });
@@ -167,6 +213,7 @@
                 signOut();
             });
         });
-    </script> 
+    </script>
+    <script src="assets/javascript/app.js"></script>
 </body>
 </html>
