@@ -44,10 +44,11 @@
 
         <div id="results" class="hidden">
             <div class="no-results hidden">Sorry, your search returned no results.</div>
-            <div class="results-table-wrapper">
-                <table id="resultsTable" class="table table-striped table-responsive results-table">
+            <div class="results-table-wrapper alt-table-responsive">
+                <table id="resultsTable" class="table table-striped results-table">
                     <thead>
                         <tr>
+                            <th>Event</th>
                             <th>Artist(s)</th>
                             <th>Date &amp; Time</th>
                             <th>Venue</th>
@@ -68,19 +69,20 @@
                             <input type="hidden" id="eventId" />
                             <input type="hidden" ide="eventUri" />
                             <input type="hidden" id="datetime" />
-                            <div id="userDetails">
-                                <div id="userPhoto" class="pull-right clearfix"></div>
-                                <strong>Your Name:</strong> <span id="rsvpGivenName"></span> <span id="rsvpFamilyName"></span><br>
-                                <strong>Your Email:</strong> <span id="rsvpEmail"></span>
-                            </div>
+                            <div id="userPhoto" class="pull-right clearfix user-photo"></div>
+                            <h2 id="rsvpTitle"></h2>
                             <div id="showDetails">
-                                <h4>Show Details:</h4>
-                                <span id="rsvpLineup"></span><br>
-                                <span id="rsvpShowDate"></span><br>
-                                <span id="rsvpShowVenue"></span><br>
+                                <p><strong>Date/Time:</strong><br>
+                                <span id="rsvpShowDate"></span></p>
+                                <p><strong>Lineup:</strong> <br>
+                                <span id="rsvpLineup"></span><br></p>
+                                
+                                <h4>Venue:</h4>
+                                <p><span id="rsvpShowVenue"></span><br>
                                 <span id="rsvpStreet"></span><br>
                                 <span id="rsvpCity"></span><span id="rsvpState"></span> <span id="rsvpZip"></span><br>
-                                <span id="rsvpCountry"></span>
+                                <span id="rsvpCountry"></span><br>
+                                <span id="rsvpPhone"></span></p>
                             </div>
                             <div class="form-group">
                                 <h4>Add an RSVP Message (<span id="charsLeft">280</span> characters remaining)</h4>
@@ -153,8 +155,6 @@
                 }
             });
             var profile = googleUser.getBasicProfile();
-            var givenName = profile.getGivenName();
-            var familyName = profile.getFamilyName();
             var email = profile.getEmail();
             var photo = profile.getImageUrl();
             // The ID token you need to pass to your backend:
@@ -170,9 +170,6 @@
                 $('.user-info').html('You are logged in as <strong>' + email + '</strong> (Not you? <a class="sign-out">Sign Out</a>)');
                 $('.g-signin2').hide();
                 $('.user-info').removeClass('hidden');
-                $('#rsvpGivenName').text(givenName);
-                $('#rsvpFamilyName').text(familyName);
-                $('#rsvpEmail').text(email);
                 $('#userPhoto').html('<img src="' + photo + '" class="img-responsive" />');
             }
         }

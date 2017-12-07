@@ -93,14 +93,15 @@ $(document).ready(function() {
 												moment(curEvent.start.datetime).format('M/D/YYYY @ h:mma');
 											var lineup = '';
 											var location = curEvent.location.city;
+											var venue = curEvent.venue !== undefined ? curEvent.venue.displayName : 'TBA';
 	
 											for (var l=0; l < curEvent.performance.length; l++) {
-												if (curEvent.performance.length > 5) {
+												if (curEvent.performance.length > 20) {
 													lineup += curEvent.performance[l].artist.displayName;
-													if (l <= 3 ) {
+													if (l <= 18 ) {
 														lineup += ', ';
 													}
-													if (l > 3) {
+													if (l > 18) {
 														lineup += ' (and more!)';
 														break;
 													}
@@ -112,20 +113,18 @@ $(document).ready(function() {
 												}
 											}
 	
-											var tr = $('<tr><td width="250">' + lineup + '</td><td>' + dateFormat  + '</td><td>' + curEvent.venue.displayName + '</td><td>' + location + '</td>');
+											var tr = $('<tr><td class="eventTitle"><strong>' + curEvent.displayName + '</strong></td><td class="eventLineup">' + lineup + '</td><td class="eventDateTime">' + dateFormat  + '</td><td>' + venue + '</td><td>' + location + '</td>');
 											
 											var rsvpCell = $('<td>');
 											var rsvpButton = $('<button>');
 											rsvpButton.addClass('rsvp btn btn-rsvp');
 											rsvpButton.attr('data-id', curEvent.id)
 												.attr('data-uri', curEvent.uri)
+												.attr('data-title', curEvent.displayName)
 												.attr('data-lineup', lineup)
 												.attr('data-date', curEvent.start.datetime == null ? curEvent.start.date : curEvent.start.datetime)
 												.attr('data-venue-id', curEvent.venue.id)
-												.attr('data-venue', curEvent.venue.displayName)
-												.attr('data-city', curEvent.venue.metroArea.displayName)
-												.attr('data-state', curEvent.venue.metroArea.state !== undefined ? curEvent.venue.metroArea.state.displayName : '')
-												.attr('data-country', curEvent.venue.metroArea.country.displayName)
+												.attr('data-state', curEvent.venue.metroArea.state == undefined ? '' : curEvent.venue.metroArea.state.displayName)
 												.attr('data-target', '#rsvpModal')
 												.text('RSVP');
 						
@@ -163,29 +162,46 @@ $(document).ready(function() {
 		$('#alreadyRSVPed').addClass('hidden');
 		$('#onRSVP').addClass('hidden');
 		var button = $(event.relatedTarget);
-		var street, zip;
-		$.ajax('http://api.songkick.com/api/3.0/venues/' + button.data('venue-id') + '.json?apikey=' + apiKey)
-			.done(function (response) {
-				street = response.resultsPage.results.venue.street;
-				zip = response.resultsPage.results.venue.zip;
+		var venueId = button.data('venue-id');
 
-				modal.find('#rsvpStreet').text(street);
-				modal.find('#rsvpZip').text(zip);
-			})
-			.fail(function(error) {
-				$('#results').append('<p class="apiError">An error occurred while retrieving event data from the API :(');
-			});
+		if (venueId) {
+			var venueName, street, zip, city, country;
+			$.ajax('http://api.songkick.com/api/3.0/venues/' + button.data('venue-id') + '.json?apikey=' + apiKey)
+				.done(function (response) {
+					var curVenue = response.resultsPage.results.venue;
+					street = curVenue.street;
+					zip = curVenue.zip;
+					city = curVenue.city.displayName;
+					country = curVenue.city.country.displayName;
+					venueName = curVenue.displayName;
+					modal.find('#rsvpStreet').text(street);
+					modal.find('#rsvpZip').text(zip);
+					modal.find('#rsvpShowVenue').text(venueName);
+					modal.find('#rsvpCity').text(city);
+					if(state.length) {
+						modal.find('#rsvpState').text(', ' + state);
+					} else {
+						modal.find('#rsvpState').empty();
+					}
+					modal.find('#rsvpCountry').text(country);
+				})
+				.fail(function(error) {
+					$('#results').append('<p class="apiError">An error occurred while retrieving event data from the API :(');
+				});
+		} else {
+			modal.find('#rsvpShowVenue').text('TBA');
+		}
+		
 		var id = button.data('id');
 		var uri = button.data('uri');
+		var title = button.data('title');
 		var lineup = button.data('lineup');
 		var showDate = button.data('date');
-		var venue = button.data('venue');
-		var city = button.data('city');
 		var state = button.data('state');
-		var country = button.data('country');
 		var modal = $(this);
 		modal.find('#eventId').val(id);
 		modal.find('#eventUri').val(uri);
+		modal.find('#rsvpTitle').text(title);
 		modal.find('#datetime').val(moment(showDate).format('X'));
 		//get number of RSVPs for each event, and append it to the td
 						
@@ -202,18 +218,10 @@ $(document).ready(function() {
 
 		modal.find('#rsvpLineup').text(lineup);
 		if(moment(showDate).format('h:mma') == '12:00am') {
-			modal.find('#rsvpShowDate').text(moment(showDate).format('M/D/YYYY'));
+			modal.find('#rsvpShowDate').text(moment(showDate).format('M/D/YYYY') + ' (Time Not Given)');
 		} else {
 			modal.find('#rsvpShowDate').text(moment(showDate).format('M/D/YYYY @ h:mma'));
 		}
-		modal.find('#rsvpShowVenue').text(venue);
-		modal.find('#rsvpCity').text(city);
-		if(state.length) {
-			modal.find('#rsvpState').text(', ' + state);
-		} else {
-			modal.find('#rsvpState').empty();
-		}
-		modal.find('#rsvpCountry').text(country);
 	});
 
 	$('#cancelRsvp').on('click', function () {
