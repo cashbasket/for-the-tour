@@ -71,7 +71,8 @@ p {
 .eventDateTime {
     width: 200px;
 }
-@media screen and (max-width: 980px) {
+
+@media screen and (max-width: 767px) {
     .alt-table-responsive {
       width: 100%;
       margin-bottom: 15px;
@@ -81,4 +82,4 @@ p {
       border: 1px solid #dddddd;
       -webkit-overflow-scrolling: touch;
     }
-  }
+}
