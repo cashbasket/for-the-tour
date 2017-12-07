@@ -6,6 +6,16 @@ em {
 	font-style: italic;
 }
 
+h2 {
+    font-weight: bold;
+    font-size: 1.5em;
+    margin-bottom: 1em;
+}
+
+p {
+    margin-bottom: 1em;
+}
+
 .sign-out {
     cursor: pointer;
     text-decoration: underline;
@@ -48,3 +58,27 @@ em {
 #messageText {
 	height: 130px;
 }
+
+.user-photo {
+    margin: 0 0 20px 20px;
+}
+
+.eventTitle,
+.eventLineup {
+    width: 250px;
+}
+
+.eventDateTime {
+    width: 200px;
+}
+@media screen and (max-width: 980px) {
+    .alt-table-responsive {
+      width: 100%;
+      margin-bottom: 15px;
+      overflow-y: hidden;
+      overflow-x: auto;
+      -ms-overflow-style: -ms-autohiding-scrollbar;
+      border: 1px solid #dddddd;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
