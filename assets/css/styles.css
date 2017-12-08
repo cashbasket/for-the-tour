@@ -20,7 +20,7 @@ h2 {
 }
 
 p {
-    margin-bottom: 1em;
+    margin-bottom: 1Sem;
 }
 
 .home-search {
@@ -56,9 +56,15 @@ p {
     text-decoration: underline;
 }
 
-.navbar {
-	color:white;
-	font-size: 40px;
+.user-info {
+  vertical-align: middle;
+  float: right;
+  color: white;
+}
+
+.g-signin2 {
+  float:right;
+  vertical-align: middle;
 }
 
 .logo {
@@ -67,7 +73,7 @@ p {
 }
 
 .navbar {
-	font-family: sans-serif;
+  font-family: 'Bungee', cursive;
 }
 
 .results-table {

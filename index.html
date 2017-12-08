@@ -13,27 +13,31 @@
     <link href="https://cdn.quilljs.com/1.3.4/quill.bubble.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/reset.css">
 	<link rel="stylesheet" href="assets/css/styles.css">
+    <link href="https://fonts.googleapis.com/css?family=Bungee|Lobster|Permanent+Marker" rel="stylesheet">
 </head>
 <body>
-<nav class="navbar navbar-inverse">
-    <div class="navbar-header">
-      <a href="index.html"><img class="logo" src="assets/images/vanimage.jpg"></a>
-    </div>
-    <div>
-      <ul class="nav navbar-nav">
-        <li class="active">
-            FOR THE TOUR<span class="sr-only"></span>
-        </li>
-        <li class="active">
-            <a href="index.html">Tours<span class="sr-only"></span></a></li>
-        <li><a href="X">My RSVP's<span class="sr-only"></span></a></a></li>
-        </li>
-      </ul>
-    </div>
-</nav>  
+    <div data-example-id=navbar-link> 
+        <nav class="navbar navbar-inverse"> 
+            <div class=container-fluid> 
+                <div class="navbar-header"> 
+                    <button type=button class="collapsed navbar-toggle" data-toggle=collapse data-target=#bs-example-navbar-collapse-5 aria-expanded=false> 
+                    <span class=sr-only>Toggle navigation</span> 
+                    </button> 
+                    <a href="index.html" class="navbar-brand">For The Tour</a> 
+                </div> 
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="X">My RSVP's<span class="sr-only"></span></a></li>
+                </ul>
+                <div class="collapse navbar-collapse"> 
+                <p class="navbar-text navbar-right"><a href=# class=navbar-link>
+                    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+                    <div class="user-info"></div>
+                </a></p> 
+                </div> 
+            </div> 
+        </nav> 
+    </div>  
     <div class="container">
-        <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
-        <div class="user-info hidden"></div>
         <div id="homeSearch" class="home-search">
             <img src="assets/images/vanimage.jpg" alt="Image of a van" class="main-image img-responsive" />
             <h1>FOR THE TOUR</h1>
@@ -45,7 +49,7 @@
                         </div>
                         <button type="submit" class="btn-home">Search for Events</button>
                     </form>
-                </div>
+              </div>
             </div>
         </div>
         <div id="subSearch" class="sub-search hidden">
@@ -185,7 +189,7 @@
                 .removeAttr('data-placement')
                 .removeAttr('data-original-title');
             if (isLoggedIn) {
-                $('.user-info').html('You are logged in as <strong>' + email + '</strong> (Not you? <a class="sign-out">Sign Out</a>)');
+                $('.user-info').html( email + '</strong> (<a class="sign-out">Sign Out</a>)');
                 $('.g-signin2').hide();
                 $('.user-info').removeClass('hidden');
                 $('#userPhoto').html('<img src="' + photo + '" class="img-responsive" />');
