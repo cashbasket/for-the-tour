@@ -72,7 +72,7 @@ $(document).ready(function() {
 			$('#homeSearch, .no-results, #results, #containerHead').addClass('hidden');
 			$('.searching').removeClass('hidden');
 			$('.results-table-wrapper, .apiError').hide();
-			$.ajax('http://api.songkick.com/api/3.0/search/artists.json?apikey=' + apiKey + '&query=' + encodeURIComponent(band))
+			$.ajax('https://api.songkick.com/api/3.0/search/artists.json?apikey=' + apiKey + '&query=' + encodeURIComponent(band))
 				.done(function (response) {
 					$('.searching').addClass('hidden');
 					$('#resultsTable > tbody').empty();
@@ -87,7 +87,7 @@ $(document).ready(function() {
 						if (touringArtistIds.length) {
 							
 							for (var j=0; j < touringArtistIds.length; j++) {
-								$.ajax('http://api.songkick.com/api/3.0/artists/' + touringArtistIds[j] + '/calendar.json?apikey=' + apiKey)
+								$.ajax('https://api.songkick.com/api/3.0/artists/' + touringArtistIds[j] + '/calendar.json?apikey=' + apiKey)
 									.done(function (calResponse) {
 										var events = calResponse.resultsPage.results.event;
 										if(events.length) {
@@ -180,7 +180,7 @@ $(document).ready(function() {
 		var venueName = button.data('venue-name');
 		var street, zip, city, country;
 		if (venueId) {
-			$.ajax('http://api.songkick.com/api/3.0/venues/' + button.data('venue-id') + '.json?apikey=' + apiKey)
+			$.ajax('https://api.songkick.com/api/3.0/venues/' + button.data('venue-id') + '.json?apikey=' + apiKey)
 				.done(function (response) {
 					var curVenue = response.resultsPage.results.venue;
 					street = curVenue.street;
