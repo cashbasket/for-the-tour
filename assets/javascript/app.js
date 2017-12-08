@@ -63,15 +63,19 @@ $(document).ready(function() {
 		theme: 'snow'
 	});
 	
-	$('#searchForm').on('submit', function(event) {
-		$('.results-table-wrapper, .apiError').hide();
-		$('.no-results').addClass('hidden');
+	$('.searchForm').on('submit', function(event) {
+		var curInput = $(this).find('.search-input');
 		event.preventDefault();
-		$('#results').removeClass('hidden');
-		var band = $('#bandName').val().trim();
+		var band = curInput.val().trim();
 		if (band.length) {
+			$('#homeSearch').addClass('hidden');
+			$('#subSearch').removeClass('hidden');
+			$('.results-table-wrapper, .apiError').hide();
+			$('.no-results').addClass('hidden');
+			$('#results, .searching').removeClass('hidden');
 			$.ajax('http://api.songkick.com/api/3.0/search/artists.json?apikey=' + apiKey + '&query=' + encodeURIComponent(band))
 				.done(function (response) {
+					$('.searching').addClass('hidden');
 					$('#resultsTable > tbody').empty();
 					if (response.resultsPage.results.artist) {
 						var touringArtistIds = [];
@@ -80,72 +84,77 @@ $(document).ready(function() {
 								touringArtistIds.push(response.resultsPage.results.artist[i].id);
 							}
 						}
-						for (var j=0; j < touringArtistIds.length; j++) {
-							$.ajax('http://api.songkick.com/api/3.0/artists/' + touringArtistIds[j] + '/calendar.json?apikey=' + apiKey)
-								.done(function (calResponse) {
-									var events = calResponse.resultsPage.results.event;
-									if(events.length) {
-										for (var k=0; k < events.length; k++) {
+						
+						if (touringArtistIds.length) {
+							for (var j=0; j < touringArtistIds.length; j++) {
+								$.ajax('http://api.songkick.com/api/3.0/artists/' + touringArtistIds[j] + '/calendar.json?apikey=' + apiKey)
+									.done(function (calResponse) {
+										var events = calResponse.resultsPage.results.event;
+										if(events.length) {
+											for (var k=0; k < events.length; k++) {
 											//loop through events
-											var curEvent = events[k];
-											var dateFormat = curEvent.start.datetime == null ? 
-												moment(curEvent.start.date).format('M/D/YYYY') :
-												moment(curEvent.start.datetime).format('M/D/YYYY @ h:mma');
-											var lineup = '';
-											var location = curEvent.location.city;
-											var venue = curEvent.venue.displayName !== 'Unknown venue'? curEvent.venue.displayName : 'TBA';
+												var curEvent = events[k];
+												var dateFormat = curEvent.start.datetime == null ? 
+													moment(curEvent.start.date).format('M/D/YYYY') :
+													moment(curEvent.start.datetime).format('M/D/YYYY @ h:mma');
+												var lineup = '';
+												var location = curEvent.location.city;
+												var venue = curEvent.venue.displayName !== 'Unknown venue'? curEvent.venue.displayName : 'TBA';
 	
-											for (var l=0; l < curEvent.performance.length; l++) {
-												if (curEvent.performance.length > 20) {
-													lineup += curEvent.performance[l].artist.displayName;
-													if (l <= 18 ) {
-														lineup += ', ';
-													}
-													if (l > 18) {
-														lineup += ' (and more!)';
-														break;
-													}
-												} else {
-													lineup += curEvent.performance[l].artist.displayName;
-													if (l < curEvent.performance.length - 1 ) {
-														lineup += ', ';
+												for (var l=0; l < curEvent.performance.length; l++) {
+													if (curEvent.performance.length > 20) {
+														lineup += curEvent.performance[l].artist.displayName;
+														if (l <= 18 ) {
+															lineup += ', ';
+														}
+														if (l > 18) {
+															lineup += ' (and more!)';
+															break;
+														}
+													} else {
+														lineup += curEvent.performance[l].artist.displayName;
+														if (l < curEvent.performance.length - 1 ) {
+															lineup += ', ';
+														}
 													}
 												}
-											}
 	
-											var tr = $('<tr><td class="eventTitle"><strong>' + curEvent.displayName + '</strong></td><td class="eventLineup">' + lineup + '</td><td class="eventDateTime">' + dateFormat  + '</td><td>' + venue + '</td><td>' + location + '</td>');
+												var tr = $('<tr><td class="eventTitle"><strong>' + curEvent.displayName.replace('Unknown venue', 'TBA') + '</strong></td><td class="eventLineup">' + lineup + '</td><td class="eventDateTime">' + dateFormat  + '</td><td>' + venue + '</td><td>' + location + '</td>');
 											
-											var rsvpCell = $('<td>');
-											var rsvpButton = $('<button>');
-											rsvpButton.addClass('rsvp btn btn-rsvp');
-											rsvpButton.attr('data-id', curEvent.id)
-												.attr('data-uri', curEvent.uri)
-												.attr('data-title', curEvent.displayName)
-												.attr('data-lineup', lineup)
-												.attr('data-date', curEvent.start.datetime == null ? curEvent.start.date : curEvent.start.datetime)
-												.attr('data-venue-id', curEvent.venue.id)
-												.attr('data-venue-name', curEvent.venue.displayname)
-												.attr('data-state', curEvent.venue.metroArea.state == undefined ? '' : curEvent.venue.metroArea.state.displayName)
-												.attr('data-target', '#rsvpModal')
-												.text('RSVP');
+												var rsvpCell = $('<td>');
+												var rsvpButton = $('<button>');
+												rsvpButton.addClass('rsvp btn btn-rsvp');
+												rsvpButton.attr('data-id', curEvent.id)
+													.attr('data-uri', curEvent.uri)
+													.attr('data-title', curEvent.displayName.replace('Unknown venue', 'TBA'))
+													.attr('data-lineup', lineup)
+													.attr('data-date', curEvent.start.datetime == null ? curEvent.start.date : curEvent.start.datetime)
+													.attr('data-venue-id', curEvent.venue.id)
+													.attr('data-venue-name', curEvent.venue.displayname)
+													.attr('data-state', curEvent.venue.metroArea.state == undefined ? '' : curEvent.venue.metroArea.state.displayName)
+													.attr('data-target', '#rsvpModal')
+													.text('RSVP');
 						
-											// if user is not logged in, add the tooltip stuff
-											if($('.user-info').text().length === 0) {
-												rsvpButton.attr('data-placement', 'top')
-													.attr('rel', 'tooltip')
-													.attr('title', 'You must be signed in to RSVP');
-											}
+												// if user is not logged in, add the tooltip stuff
+												if($('.user-info').text().length === 0) {
+													rsvpButton.attr('data-placement', 'top')
+														.attr('rel', 'tooltip')
+														.attr('title', 'You must be signed in to RSVP');
+												}
 													
-											$('#resultsTable > tbody').append(tr.append(rsvpCell.append(rsvpButton)));
-											$('.results-table-wrapper').slideDown(200);
-										}								
-									} else {
-										$('.no-results').removeClass('hidden');
-									}
-								})
-								.fail(function(error) {
-									$('#results').append('<p class="apiError">An error occurred while retrieving event data from the API :(');
-								});
+												$('#resultsTable > tbody').append(tr.append(rsvpCell.append(rsvpButton)));
+												$('.results-table-wrapper').slideDown(200);
+											}								
+										} else {
+											$('.no-results').removeClass('hidden');
+										}
+									})
+									.fail(function(error) {
+										$('#results').append('<p class="apiError">An error occurred while retrieving event data from the API :(');
+									});
+							}
+						} else {
+							$('.no-results').removeClass('hidden');
 						}
 					} else {
 						$('.no-results').removeClass('hidden');
@@ -155,7 +164,7 @@ $(document).ready(function() {
 					$('#results').append('<p class="apiError">An error occurred while retrieving artist data from the API :(');
 				});
 		} 
-		$('#bandName').val('');
+		$('#bandName, #subBandName').val('');
 	});
 
 	$('#rsvpModal').on('show.bs.modal', function (event) {
@@ -166,7 +175,7 @@ $(document).ready(function() {
 		var venueId = button.data('venue-id');
 		var venueName = button.data('venue-name');
 		var street, zip, city, country;
-		if (venueId && venueName !== 'Unknown venue') {
+		if (venueId) {
 			$.ajax('http://api.songkick.com/api/3.0/venues/' + button.data('venue-id') + '.json?apikey=' + apiKey)
 				.done(function (response) {
 					var curVenue = response.resultsPage.results.venue;
@@ -176,7 +185,14 @@ $(document).ready(function() {
 					country = curVenue.city.country.displayName;
 					venueName = curVenue.displayName;
 					modal.find('#rsvpStreet').text(street);
-					modal.find('#rsvpZip').text(zip);
+					modal.find('#rsvpZip').text(zip); {}
+					if (venueName !== 'Unknown venue') {
+						venueName = curVenue.displayName;
+						$('#rsvpShowVenue').show();
+					} else {
+						venueName = '';
+						$('#rsvpShowVenue').hide();
+					}
 					modal.find('#rsvpShowVenue').text(venueName);
 					modal.find('#rsvpCity').text(city);
 					if(state.length) {
@@ -191,6 +207,11 @@ $(document).ready(function() {
 				});
 		} else {
 			$('#rsvpShowVenue').text('TBA');
+			$('#rsvpStreet').empty();
+			$('#rsvpZip').empty();
+			$('#rsvpCity').empty();
+			$('#rsvpState').empty();
+			$('#rsvpCountry').empty();
 		}		
 
 		var id = button.data('id');
