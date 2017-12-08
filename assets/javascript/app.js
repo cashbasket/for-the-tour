@@ -68,11 +68,10 @@ $(document).ready(function() {
 		event.preventDefault();
 		var band = curInput.val().trim();
 		if (band.length) {
-			$('#homeSearch').addClass('hidden');
-			$('#subSearch').removeClass('hidden');
+			$('#result-header-query').text(band);
+			$('#homeSearch, .no-results, #results, #containerHead').addClass('hidden');
+			$('.searching').removeClass('hidden');
 			$('.results-table-wrapper, .apiError').hide();
-			$('.no-results').addClass('hidden');
-			$('#results, .searching').removeClass('hidden');
 			$.ajax('http://api.songkick.com/api/3.0/search/artists.json?apikey=' + apiKey + '&query=' + encodeURIComponent(band))
 				.done(function (response) {
 					$('.searching').addClass('hidden');
@@ -86,6 +85,7 @@ $(document).ready(function() {
 						}
 						
 						if (touringArtistIds.length) {
+							
 							for (var j=0; j < touringArtistIds.length; j++) {
 								$.ajax('http://api.songkick.com/api/3.0/artists/' + touringArtistIds[j] + '/calendar.json?apikey=' + apiKey)
 									.done(function (calResponse) {
@@ -143,9 +143,11 @@ $(document).ready(function() {
 												}
 													
 												$('#resultsTable > tbody').append(tr.append(rsvpCell.append(rsvpButton)));
+												$('#containerHead, #results').removeClass('hidden');
 												$('.results-table-wrapper').slideDown(200);
 											}								
 										} else {
+											$('#containerHead').removeClass('hidden');
 											$('.no-results').removeClass('hidden');
 										}
 									})
@@ -154,9 +156,11 @@ $(document).ready(function() {
 									});
 							}
 						} else {
+							$('#containerHead').removeClass('hidden');
 							$('.no-results').removeClass('hidden');
 						}
 					} else {
+						$('#containerHead').removeClass('hidden');
 						$('.no-results').removeClass('hidden');
 					}
 				})
@@ -240,7 +244,7 @@ $(document).ready(function() {
 
 		modal.find('#rsvpLineup').text(lineup);
 		if(moment(showDate).format('h:mma') == '12:00am') {
-			modal.find('#rsvpShowDate').text(moment(showDate).format('M/D/YYYY') + ' (Time Not Given)');
+			modal.find('#rsvpShowDate').text(moment(showDate).format('M/D/YYYY') + ' (Time Not Specified)');
 		} else {
 			modal.find('#rsvpShowDate').text(moment(showDate).format('M/D/YYYY @ h:mma'));
 		}

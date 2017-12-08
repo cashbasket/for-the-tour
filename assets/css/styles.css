@@ -1,3 +1,8 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.3;
+}
+
 strong {
     font-weight: bold;
 }
@@ -7,6 +12,7 @@ em {
 }
 
 h1 {
+    font-family: 'Fira Sans Condensed', sans-serif;
     text-align: center;
     font-size: 2.5em;
     font-weight: bold;
@@ -14,13 +20,14 @@ h1 {
 }
 
 h2 {
+    font-family: 'Fira Sans Condensed', sans-serif;
     font-weight: bold;
     font-size: 1.5em;
     margin-bottom: 1em;
 }
 
 p {
-    margin-bottom: 1Sem;
+    margin-bottom: 1em;
 }
 
 .home-search {
@@ -34,6 +41,7 @@ p {
 
 .sub-search {
     padding-bottom: 20px;
+    float: right;
 }
 
 .sub-search-input {
@@ -100,7 +108,7 @@ p {
     font-family: Arial;
     color: #ffffff;
     font-size: 20px;
-    padding: 10px 20px 10px 20px;
+    padding: 10px 20px;
     border: solid #1f628d 1px;
     text-decoration: none;
 }
@@ -114,12 +122,13 @@ p {
     font-family: Arial;
     color: #ffffff;
     font-size: 16px;
-    padding: 10px 20px 10px 20px;
+    padding: 7px 10px;
     border: solid #1f628d 1px;
     text-decoration: none;
 }
   
-.btn-home:hover {
+.btn-home:hover,
+.btn-sub:hover {
     background: #3cb0fd;
     background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
     text-decoration: none;
@@ -152,6 +161,20 @@ p {
     width: 200px;
 }
 
+.ql-container {
+    font-size: 16px;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd)>td.eventTitle {
+    background-color: #e2e0e0;
+    border-color: #cccccc;
+}
+
+.table-striped>tbody>tr:nth-of-type(even)>td.eventTitle {
+    background-color: #ebebeb;
+    border-color: #cccccc;
+}
+
 @media screen and (max-width: 767px) {
     .alt-table-responsive {
       width: 100%;
@@ -161,5 +184,9 @@ p {
       -ms-overflow-style: -ms-autohiding-scrollbar;
       border: 1px solid #dddddd;
       -webkit-overflow-scrolling: touch;
+    }
+
+    .sub-search {
+        float: none;
     }
 }
