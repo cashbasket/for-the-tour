@@ -189,7 +189,7 @@ $(document).ready(function() {
 					country = curVenue.city.country.displayName;
 					venueName = curVenue.displayName;
 					modal.find('#rsvpStreet').text(street);
-					modal.find('#rsvpZip').text(zip); {}
+					modal.find('#rsvpZip').text(zip);
 					if (venueName !== 'Unknown venue') {
 						venueName = curVenue.displayName;
 						$('#rsvpShowVenue').show();
