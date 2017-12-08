@@ -38,15 +38,34 @@
         </nav> 
     </div>  
     <div class="container">
-        <form id="searchForm" class="form-inline">
-            <div class="form-group">
-                <input type="text" id="bandName" placeholder="Enter Band Name" class="form-control" />
+        <div id="homeSearch" class="home-search">
+            <img src="assets/images/vanimage.jpg" alt="Image of a van" class="main-image img-responsive" />
+            <h1>FOR THE TOUR</h1>
+            <div class="row">
+                <div class="col-md-6 col-md-push-3">
+                    <form class ="searchForm">
+                        <div class="form-group">
+                            <input type="text" id="bandName" placeholder="Enter a band name..." class="form-control search-input" />
+                        </div>
+                        <button type="submit" class="btn-home">Search for Events</button>
+                    </form>
+              </div>
             </div>
-            <button type="submit" class="btn btn-primary">Search</button>
-        </form>
-
+        </div>
+        <div id="subSearch" class="sub-search hidden">
+            <form class="searchForm form-inline">
+                <div class="form-group">
+                    <input type="text" id="subBandName" placeholder="Enter a band name..." class="form-control search-input sub-search-input" />
+                </div>
+                <button type="submit" class="btn-sub">Search Again</button>
+            </form>
+        </div>
+        <div class="no-results hidden">Sorry, your search returned no results.</div>
         <div id="results" class="hidden">
-            <div class="no-results hidden">Sorry, your search returned no results.</div>
+            <div class="searching">
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><br>
+                Searching
+            </div>
             <div class="results-table-wrapper alt-table-responsive">
                 <table id="resultsTable" class="table table-striped results-table">
                     <thead>
@@ -78,14 +97,14 @@
                                 <p><strong>Date/Time:</strong><br>
                                 <span id="rsvpShowDate"></span></p>
                                 <p><strong>Lineup:</strong> <br>
-                                <span id="rsvpLineup"></span><br></p>
+                                <span id="rsvpLineup"></span></p>
                                 
                                 <h4>Venue:</h4>
-                                <p><span id="rsvpShowVenue"></span><br>
-                                <span id="rsvpStreet"></span><br>
-                                <span id="rsvpCity"></span><span id="rsvpState"></span> <span id="rsvpZip"></span><br>
-                                <span id="rsvpCountry"></span><br>
-                                <span id="rsvpPhone"></span></p>
+                                <div id="rsvpShowVenue"></div>
+                                <div id="rsvpStreet"></div>
+                                <div id="rsvpCity"><span id="rsvpState"></span> <span id="rsvpZip"></span></div>
+                                <div id="rsvpCountry"></div>
+                                <div id="rsvpPhone"></div>
                             </div>
                             <div class="form-group">
                                 <h4>Add an RSVP Message (<span id="charsLeft">280</span> characters remaining)</h4>
@@ -170,7 +189,6 @@
                 .removeAttr('data-placement')
                 .removeAttr('data-original-title');
             if (isLoggedIn) {
-                console.log(isLoggedIn);
                 $('.user-info').html( email + '</strong> (<a class="sign-out">Sign Out</a>)');
                 $('.g-signin2').hide();
                 $('.user-info').removeClass('hidden');

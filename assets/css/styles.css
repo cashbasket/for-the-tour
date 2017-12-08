@@ -6,6 +6,13 @@ em {
 	font-style: italic;
 }
 
+h1 {
+    text-align: center;
+    font-size: 2.5em;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
 h2 {
     font-weight: bold;
     font-size: 1.5em;
@@ -16,6 +23,34 @@ p {
     margin-bottom: 1Sem;
 }
 
+.home-search {
+    text-align: center;
+}
+
+.search-input {
+    font-size: 20px !important;
+    padding: 20px 15px !important;
+}
+
+.sub-search {
+    padding-bottom: 20px;
+}
+
+.sub-search-input {
+    font-size: 16px !important;
+    padding: 18px 15px !important;
+}
+
+.btn-home-search {
+    font-size: 1.5em;
+}
+
+.searching {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 1.75;
+}
 .sign-out {
     cursor: pointer;
     text-decoration: underline;
@@ -49,6 +84,45 @@ p {
 	background-color: #666;
 	color: #fff;
 	font-weight: bold;
+}
+
+.main-image {
+    margin: 0 auto 20px auto;
+    display: block;
+}
+
+.btn-home {
+    background: #3498db;
+    background-image: linear-gradient(to bottom, #3498db, #2980b9);
+    -webkit-border-radius: 7;
+    -moz-border-radius: 7;
+    border-radius: 4px;
+    font-family: Arial;
+    color: #ffffff;
+    font-size: 20px;
+    padding: 10px 20px 10px 20px;
+    border: solid #1f628d 1px;
+    text-decoration: none;
+}
+
+.btn-sub {
+    background: #3498db;
+    background-image: linear-gradient(to bottom, #3498db, #2980b9);
+    -webkit-border-radius: 7;
+    -moz-border-radius: 7;
+    border-radius: 4px;
+    font-family: Arial;
+    color: #ffffff;
+    font-size: 16px;
+    padding: 10px 20px 10px 20px;
+    border: solid #1f628d 1px;
+    text-decoration: none;
+}
+  
+.btn-home:hover {
+    background: #3cb0fd;
+    background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+    text-decoration: none;
 }
 
 #rsvpModal h4 {
