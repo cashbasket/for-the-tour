@@ -12,11 +12,10 @@ em {
 }
 
 h1 {
-    font-family: 'Fira Sans Condensed', sans-serif;
+    font-family: 'Bungee', cursive;
     text-align: center;
-    font-size: 2.5em;
+    font-size: 3em;
     font-weight: bold;
-    margin-bottom: 20px;
 }
 
 h2 {
@@ -32,6 +31,11 @@ p {
 
 .home-search {
     text-align: center;
+}
+
+.home-search p {
+    font-size: 20px;
+    margin-bottom: 20px;
 }
 
 .search-input {
@@ -58,6 +62,7 @@ p {
     font-size: 20px;
     font-weight: bold;
     line-height: 1.75;
+    margin-top: 30px;
 }
 .sign-out {
     cursor: pointer;
@@ -99,38 +104,27 @@ p {
     display: block;
 }
 
-.btn-home {
-    background: #3498db;
-    background-image: linear-gradient(to bottom, #3498db, #2980b9);
-    -webkit-border-radius: 7;
-    -moz-border-radius: 7;
+.btn-home,
+.btn-sub {
+    background: #7f8e99;
+    background-image: linear-gradient(to bottom, #7f8e99, #637079);
     border-radius: 4px;
-    font-family: Arial;
     color: #ffffff;
     font-size: 20px;
     padding: 10px 20px;
-    border: solid #1f628d 1px;
+    border: solid #41494e 1px;
     text-decoration: none;
 }
 
 .btn-sub {
-    background: #3498db;
-    background-image: linear-gradient(to bottom, #3498db, #2980b9);
-    -webkit-border-radius: 7;
-    -moz-border-radius: 7;
-    border-radius: 4px;
-    font-family: Arial;
-    color: #ffffff;
     font-size: 16px;
     padding: 7px 10px;
-    border: solid #1f628d 1px;
-    text-decoration: none;
 }
   
 .btn-home:hover,
 .btn-sub:hover {
-    background: #3cb0fd;
-    background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+    background: #7fa0b8;
+    background-image: linear-gradient(to bottom, #7fa0b8, #5d8099);
     text-decoration: none;
 }
 
