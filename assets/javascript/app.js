@@ -120,11 +120,11 @@ $(document).ready(function() {
 													}
 												}
 	
-												var tr = $('<tr><td class="eventTitle"><strong>' + curEvent.displayName.replace('Unknown venue', 'TBA') + '</strong></td><td class="eventLineup">' + lineup + '</td><td class="eventDateTime">' + dateFormat  + '</td><td>' + venue + '</td><td>' + location + '</td>');
+												var tr = $('<tr><td class="eventTitle">' + curEvent.displayName.replace('Unknown venue', 'TBA') + '</td><td class="eventLineup">' + lineup + '</td><td class="eventDateTime">' + dateFormat  + '</td><td>' + venue + '</td><td>' + location + '</td>');
 											
 												var rsvpCell = $('<td>');
 												var rsvpButton = $('<button>');
-												rsvpButton.addClass('rsvp btn btn-rsvp');
+												rsvpButton.addClass('rsvp btn-rsvp');
 												rsvpButton.attr('data-id', curEvent.id)
 													.attr('data-uri', curEvent.uri)
 													.attr('data-event-title', curEvent.displayName.replace('Unknown venue', 'TBA'))
