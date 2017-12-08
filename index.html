@@ -201,7 +201,8 @@
             //remove tooltip attributes from rsvp buttons
             $('.rsvp').removeAttr('rel')
                 .removeAttr('data-placement')
-                .removeAttr('data-original-title');
+                .removeAttr('data-original-title')
+                .removeAttr('title');
 
             if (isLoggedIn) {
                 $('.user-info').html( email + '</strong> (<a class="sign-out">Sign Out</a>)');
