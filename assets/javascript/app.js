@@ -46,6 +46,7 @@ function checkForRsvp(eventId, message, fn) {
 }
 
 $(document).ready(function() {
+	// initialize all tooltips
 	$('body').tooltip({
 		selector: '[rel=tooltip]'
 	});
@@ -180,7 +181,7 @@ $(document).ready(function() {
 		var venueName = button.data('venue-name');
 		var street, zip, city, country;
 		if (venueId) {
-			$.ajax('https://api.songkick.com/api/3.0/venues/' + button.data('venue-id') + '.json?apikey=' + apiKey)
+			$.ajax('https://api.songkick.com/api/3.0/venues/' + venueId + '.json?apikey=' + apiKey)
 				.done(function (response) {
 					var curVenue = response.resultsPage.results.venue;
 					street = curVenue.street;

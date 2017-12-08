@@ -198,9 +198,11 @@
             if(id_token.length)
                 isLoggedIn = true;
 
-            $('.rsvp').removeAttr('data-toggle')
+            //remove tooltip attributes from rsvp buttons
+            $('.rsvp').removeAttr('rel')
                 .removeAttr('data-placement')
                 .removeAttr('data-original-title');
+
             if (isLoggedIn) {
                 $('.user-info').html( email + '</strong> (<a class="sign-out">Sign Out</a>)');
                 $('.g-signin2').hide();
@@ -228,12 +230,12 @@
                 $('.rsvp').attr('rel', 'tooltip')
                     .attr('data-placement', 'top')
                     .attr('data-original-title', 'You must be signed in to RSVP');
+                 // reset id token to empty string
+                isLoggedIn = false;
+                // hide user info and show sign-in button
+                $('.g-signin2').show();
+                $('.user-info').empty().addClass('hidden');
             });
-            // reset id token to empty string
-            isLoggedIn = false;
-            // hide user info and show sign-in button
-            $('.g-signin2').show();
-            $('.user-info').empty().addClass('hidden');
         }
         $(document).ready(function() {            
             $('body').on('click', '.rsvp', function() {
