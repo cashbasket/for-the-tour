@@ -126,7 +126,7 @@ $(document).ready(function() {
 												rsvpButton.addClass('rsvp btn btn-rsvp');
 												rsvpButton.attr('data-id', curEvent.id)
 													.attr('data-uri', curEvent.uri)
-													.attr('data-title', curEvent.displayName.replace('Unknown venue', 'TBA'))
+													.attr('data-event-title', curEvent.displayName.replace('Unknown venue', 'TBA'))
 													.attr('data-lineup', lineup)
 													.attr('data-date', curEvent.start.datetime == null ? curEvent.start.date : curEvent.start.datetime)
 													.attr('data-venue-id', curEvent.venue.id)
@@ -220,7 +220,7 @@ $(document).ready(function() {
 
 		var id = button.data('id');
 		var uri = button.data('uri');
-		var title = button.data('title');
+		var title = button.data('event-title');
 		var lineup = button.data('lineup');
 		var showDate = button.data('date');
 		var state = button.data('state');
