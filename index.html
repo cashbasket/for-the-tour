@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="assets/css/reset.css">
 	<link rel="stylesheet" href="assets/css/styles.css">
     <link href="https://fonts.googleapis.com/css?family=Bungee|Lobster|Permanent+Marker" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans+Condensed:400,700|Roboto:400,700,700i" rel="stylesheet">
 </head>
 <body>
     <div data-example-id=navbar-link> 
@@ -52,20 +53,32 @@
               </div>
             </div>
         </div>
-        <div id="subSearch" class="sub-search hidden">
-            <form class="searchForm form-inline">
-                <div class="form-group">
-                    <input type="text" id="subBandName" placeholder="Enter a band name..." class="form-control search-input sub-search-input" />
+        
+        <div class="searching hidden">
+            <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><br>
+            Searching
+        </div>
+        <div id="containerHead" class="row hidden">
+            <div class="col-sm-6">
+                <div id="resultsHead">
+                    <h2>Results for "<span id="result-header-query"></span>"</h2>
                 </div>
-                <button type="submit" class="btn-sub">Search Again</button>
-            </form>
+            </div>
+            <div class="col-sm-6">
+                <div id="subSearch" class="sub-search">
+                    <form class="searchForm form-inline">
+                        <div class="form-group">
+                            <input type="text" id="subBandName" placeholder="Enter a band name..." class="form-control search-input sub-search-input" />
+                        </div>
+                        <button type="submit" class="btn-sub">Search Again</button>
+                    </form>
+                </div>
+            </div>
         </div>
         <div class="no-results hidden">Sorry, your search returned no results.</div>
+        
         <div id="results" class="hidden">
-            <div class="searching">
-                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><br>
-                Searching
-            </div>
+            
             <div class="results-table-wrapper alt-table-responsive">
                 <table id="resultsTable" class="table table-striped results-table">
                     <thead>
@@ -102,7 +115,7 @@
                                 <h4>Venue:</h4>
                                 <div id="rsvpShowVenue"></div>
                                 <div id="rsvpStreet"></div>
-                                <div id="rsvpCity"><span id="rsvpState"></span> <span id="rsvpZip"></span></div>
+                                <div><span id="rsvpCity"></span><span id="rsvpState"></span> <span id="rsvpZip"></span></div>
                                 <div id="rsvpCountry"></div>
                                 <div id="rsvpPhone"></div>
                             </div>
