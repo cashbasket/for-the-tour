@@ -294,6 +294,7 @@ $(document).ready(function() {
 				message: message
 			}, function(errors) {
 				if (!errors) {
+					$('#viewRsvp-' + eventId).removeClass('hidden');
 					onRsvp();
 				}
 			});
