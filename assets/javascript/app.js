@@ -92,13 +92,6 @@ function getEventInfo(eventId, fn) {
 				.attr('data-age', curEvent.ageRestriction ? curEvent.ageRestriction : 'None')
 				.attr('data-target', '#rsvpModal')
 				.text('More Info / RSVP');
-		
-			// if user is not logged in, add the tooltip stuff
-			if($('.user-info').text().length === 0) {
-				rsvpButton.attr('data-placement', 'top')
-					.attr('rel', 'tooltip')
-					.attr('title', 'You must be signed in to RSVP');
-			}
 
 			var viewRsvpsButton = $('<button id="viewRsvp-' + curEvent.id +'" class="btn-rsvp hidden">').attr('onClick', 'location.href=\'view-rsvps.html?event=' + curEvent.id + '\'')
 				.text('View RSVPs for This Event');
@@ -114,11 +107,6 @@ function getEventInfo(eventId, fn) {
 }
 
 $(document).ready(function() {
-	// initialize all tooltips
-	$('body').tooltip({
-		selector: '[rel=tooltip]'
-	});
-
 	//initialize Quill.js
 	var editor = new Quill('#messageText', {
 		modules: {
@@ -196,7 +184,9 @@ $(document).ready(function() {
 	});
 
 	$('#rsvpModal').on('show.bs.modal', function (event) {
-		$('#rsvp-container, #rsvpSubmit').removeClass('hidden');
+		if ($('.user-info').text().length) {
+			$('#rsvp-container, #rsvpSubmit').removeClass('hidden');
+		}
 		$('#alreadyRSVPed, #onRSVP').addClass('hidden');
 		var button = $(event.relatedTarget);
 		var venueId = button.data('venue-id');
