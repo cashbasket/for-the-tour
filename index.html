@@ -81,21 +81,7 @@
         
         <div id="results" class="hidden">
             
-            <div class="results-table-wrapper alt-table-responsive">
-                <table id="resultsTable" class="table table-striped results-table">
-                    <thead>
-                        <tr>
-                            <th>Event</th>
-                            <th>Performer(s)</th>
-                            <th>Date &amp; Time</th>
-                            <th>Venue</th>
-                            <th>Location</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
+            <div id="events"></div>
         </div>
         
         <div class="modal fade" id="rsvpModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
@@ -111,42 +97,41 @@
                             <div id="showDetails">
                                 <p><strong>Date/Time:</strong><br>
                                 <span id="rsvpShowDate"></span></p>
-                                <p><strong>Lineup:</strong> <br>
+                                <p><strong>Performer(s):</strong><br>
                                 <span id="rsvpLineup"></span></p>
                                 
-                                <h4>Venue:</h4>
-                                <div id="rsvpShowVenue"></div>
-                                <div id="rsvpStreet"></div>
-                                <div><span id="rsvpCity"></span><span id="rsvpState"></span> <span id="rsvpZip"></span></div>
-                                <div id="rsvpCountry"></div>
-                                <div id="rsvpPhone"></div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h4>Venue Information:</h4>
+                                        <div id="rsvpShowVenue"></div>
+                                        <div id="rsvpStreet"></div>
+                                        <div><span id="rsvpCity"></span><span id="rsvpState"></span> <span id="rsvpZip"></span></div>
+                                        <div id="rsvpCountry"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h4>Age Restriction:</h4>
+                                        <div id="ageRestriction"></div>
+                                        <br>
+                                        <div id="venue-website"></div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-group">
+                            <div id="alreadyRSVPed" class="hidden">
+                                <h2 class="blue">You have already RSVPed for this event.</h2>
+                            </div>
+                            <div id="onRSVP" class="hidden">
+                                <h2 class="blue">Thank you!  Your RSVP was submitted successfully</h2>
+                            </div>
+                            <div id="rsvp-container" class="form-group">
                                 <h4>Add an RSVP Message (<span id="charsLeft">280</span> characters remaining)</h4>
                                 <div id="messageText"></div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" id="cancelRsvp" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Submit RSVP</button>
+                            <button type="button" id="cancelRsvp" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button id="rsvpSubmit" type="submit" class="btn btn-primary">Submit RSVP</button>
                         </div>
                     </form>
-                    <div id="onRSVP" class="hidden">
-                        <div class="modal-body">
-                                <strong>Thank you!  Your RSVP was submitted successfully</strong>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" id="cancelRsvp" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                    <div id="alreadyRSVPed" class="hidden">
-                        <div class="modal-body">
-                            <h2>You have already RSVPed for this event.</h2>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" id="cancelRsvp" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
