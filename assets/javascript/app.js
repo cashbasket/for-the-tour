@@ -97,7 +97,6 @@ $(document).ready(function() {
 												var curEventId = events[k].id;
 												$.ajax('https://api.songkick.com/api/3.0/events/' + curEventId + '.json?apikey=' + apiKey)
 													.done(function (eventResponse) {
-														console.log(eventResponse);
 														var curEvent = eventResponse.resultsPage.results.event;
 
 														var dateFormat = curEvent.start.datetime == null ? 
