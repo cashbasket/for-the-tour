@@ -72,9 +72,14 @@ function getEventInfo(eventId, fn) {
 			var eventDivHeader = $('<div class="panel-heading">');
 			var eventDivTitle = $('<h3 class="panel-title">').text(curEvent.displayName.replace('Unknown venue', 'TBA'));
 			var eventDivBody = $('<div class="panel-body">');
-			eventDivBody.html('<h4>Performer(s)</h4><p>' + lineup + '</p><h4>Date &amp; Time</h4><p>' + dateFormat + '</p><h4>Venue</h4><p>' + venue + '</p><h4>Location</h4><p>' + location + '</p>');
+			var eventDivRow = $('<div class="row">');
+			var detailsCol = $('<div class="col-md-7">');
+			var rsvpsCol = $('<div class="col-md-5">');
+			var detailsDiv = $('<div class="event-details">');
+			var rsvpsDiv = $('<div id="rsvp-' + curEvent.id + '" class="event-rsvps">');
+			var rsvpsHeader = $('<h3>').text('Recent RSVPs');
+			detailsDiv.html('<h4>Date &amp; Time</h4><p>' + dateFormat + '</p><h4>Venue</h4><p>' + venue + '</p><h4>Location</h4><p>' + location + '</p>');
 
-			//var rsvpCell = $('<td>');
 			var rsvpButton = $('<button>');
 			rsvpButton.addClass('rsvp btn-rsvp');
 			rsvpButton.attr('data-id', curEvent.id)
@@ -94,8 +99,8 @@ function getEventInfo(eventId, fn) {
 				.text('More Info / RSVP');
 
 			var viewRsvpsButton = $('<button id="viewRsvp-' + curEvent.id +'" class="btn-rsvp hidden">').attr('onClick', 'location.href=\'view-rsvps.html?event=' + curEvent.id + '\'')
-				.text('View RSVPs for This Event');
-			$('#events').append(eventDiv.append(eventDivHeader.append(eventDivTitle)).append(eventDivBody.append(rsvpButton).append(viewRsvpsButton)));
+				.text('View RSVPs');
+			$('#events').append(eventDiv.append(eventDivHeader.append(eventDivTitle)).append(eventDivBody.append(eventDivRow.append(detailsCol.append(detailsDiv.append(rsvpButton).append(viewRsvpsButton))).append(rsvpsCol.append(rsvpsDiv.append(rsvpsHeader))))));
 		
 			$('#containerHead, #results').removeClass('hidden');
 			
@@ -152,9 +157,25 @@ $(document).ready(function() {
 											//loop through events
 												var curEventId = events[k].id;
 												getEventInfo(curEventId, function(curEventId) {
-													rsvpsRef.orderByChild('eventId').equalTo(curEventId.toString()).once('value', function(snapshot) {
+													rsvpsRef.orderByChild('eventId').equalTo(curEventId.toString()).limitToLast(10).on('value', function(snapshot) {
 														if(snapshot.val()) {
+															$('#no-results-' + curEventId).hide();
+															$('#rsvp-' + curEventId).empty().append('<h3>Recent RSVPs</h3>');
+															snapshot.forEach(function(childSnapshot) {
+																var rsvpRow  = $('<div class="row rsvp-row">');
+																var rsvpCol = $('<div class="col-md-12">');
+																var rsvpName, rsvpPhoto;
+																database.ref('/users/' + childSnapshot.val().uid).once('value', function(userSnap) {
+																	if (userSnap.val()) {
+																		rsvpName = $('<strong>').text(userSnap.val().name);
+																		rsvpPhoto = $('<img>').attr('src', userSnap.val().photoUrl).addClass('rsvp-img pull-right');
+																		$('#rsvp-' + curEventId).append(rsvpRow.append(rsvpCol.append(rsvpName).append(rsvpPhoto).append(childSnapshot.val().message)));
+																	}
+																});
+															});
 															$('#viewRsvp-' + curEventId).removeClass('hidden');
+														} else {
+															$('#rsvp-' + curEventId).append('<p id="no-results-' + curEventId + '">There are currently no RSVPs for this event.');
 														}
 													});
 												});
