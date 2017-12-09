@@ -17,7 +17,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 
 function onRsvp() {
 	//if the RSVP was successfully added, do stuff
-	$('#rsvpForm').addClass('hidden');
+	$('#rsvp-container, #rsvpSubmit').addClass('hidden');
 	$('#onRSVP').removeClass('hidden');
 	$('.ql-editor > p').empty();
 	$('.ql-editor').addClass('ql-blank');
@@ -76,7 +76,7 @@ $(document).ready(function() {
 			$.ajax('https://api.songkick.com/api/3.0/search/artists.json?apikey=' + apiKey + '&query=' + encodeURIComponent(band))
 				.done(function (response) {
 					$('.searching').addClass('hidden');
-					$('#resultsTable > tbody').empty();
+					$('#events').empty();
 					if (response.resultsPage.results.artist) {
 						var touringArtistIds = [];
 						for (var i=0; i < response.resultsPage.results.artist.length; i++){
@@ -94,58 +94,69 @@ $(document).ready(function() {
 										if(events.length) {
 											for (var k=0; k < events.length; k++) {
 											//loop through events
-												var curEvent = events[k];
-												var dateFormat = curEvent.start.datetime == null ? 
-													moment(curEvent.start.date).format('M/D/YYYY') :
-													moment(curEvent.start.datetime).format('M/D/YYYY @ h:mma');
-												var lineup = '';
-												var location = curEvent.location.city;
-												var venue = curEvent.venue.displayName !== 'Unknown venue'? curEvent.venue.displayName : 'TBA';
+												var curEventId = events[k].id;
+												$.ajax('https://api.songkick.com/api/3.0/events/' + curEventId + '.json?apikey=' + apiKey)
+													.done(function (eventResponse) {
+														console.log(eventResponse);
+														var curEvent = eventResponse.resultsPage.results.event;
+
+														var dateFormat = curEvent.start.datetime == null ? 
+															moment(curEvent.start.date).format('M/D/YYYY') :
+															moment(curEvent.start.datetime).format('M/D/YYYY @ h:mma');
+														var lineup = '';
+														var location = curEvent.location.city;
+														var venue = curEvent.venue.displayName !== 'Unknown venue'? curEvent.venue.displayName : 'N/A';
+		
+														for (var l=0; l < curEvent.performance.length; l++) {
+															lineup += curEvent.performance[l].artist.displayName;
+															if (l < curEvent.performance.length - 1 ) {
+																lineup += ', ';
+															}
+														}
 	
-												for (var l=0; l < curEvent.performance.length; l++) {
-													if (curEvent.performance.length > 20) {
-														lineup += curEvent.performance[l].artist.displayName;
-														if (l <= 18 ) {
-															lineup += ', ';
+														var eventDiv = $('<div class="panel panel-event event">');
+														var eventDivHeader = $('<div class="panel-heading">');
+														var eventDivTitle = $('<h3 class="panel-title">').text(curEvent.displayName.replace('Unknown venue', 'TBA'));
+														var eventDivBody = $('<div class="panel-body">');
+														eventDivBody.html('<h4>Performer(s)</h4><p>' + lineup + '</p><h4>Date &amp; Time</h4><p>' + dateFormat + '</p><h4>Venue</h4><p>' + venue + '</p><h4>Location</h4><p>' + location + '</p>');
+												
+														//var rsvpCell = $('<td>');
+														var rsvpButton = $('<button>');
+														rsvpButton.addClass('rsvp btn-rsvp');
+														rsvpButton.attr('data-id', curEvent.id)
+															.attr('data-venue-website', curEvent.venue.website)
+															.attr('data-event-title', curEvent.displayName.replace('Unknown venue', 'TBA'))
+															.attr('data-lineup', lineup)
+															.attr('data-date', curEvent.start.datetime == null ? curEvent.start.date : curEvent.start.datetime)
+															.attr('data-venue-id', curEvent.venue.id)
+															.attr('data-venue-name', curEvent.venue.displayName)
+															.attr('data-venue-street', curEvent.venue.street)
+															.attr('data-venue-city', curEvent.venue.city ? curEvent.venue.city.displayName : curEvent.venue.metroArea.displayName)
+															.attr('data-state', curEvent.venue.metroArea.state == undefined ? '' : curEvent.venue.metroArea.state.displayName)
+															.attr('data-zip', curEvent.venue.zip ? curEvent.venue.zip : '')
+															.attr('data-country', curEvent.venue.city ? curEvent.venue.city.country.displayName :  curEvent.venue.metroArea.country.displayName)
+															.attr('data-age', curEvent.ageRestriction ? curEvent.ageRestriction : 'None')
+															.attr('data-target', '#rsvpModal')
+															.text('More Info / RSVP');
+														
+														// if user is not logged in, add the tooltip stuff
+														if($('.user-info').text().length === 0) {
+															rsvpButton.attr('data-placement', 'top')
+																.attr('rel', 'tooltip')
+																.attr('title', 'You must be signed in to RSVP');
 														}
-														if (l > 18) {
-															lineup += ' (and more!)';
-															break;
-														}
-													} else {
-														lineup += curEvent.performance[l].artist.displayName;
-														if (l < curEvent.performance.length - 1 ) {
-															lineup += ', ';
-														}
-													}
-												}
-	
-												var tr = $('<tr><td class="eventTitle">' + curEvent.displayName.replace('Unknown venue', 'TBA') + '</td><td class="eventLineup">' + lineup + '</td><td class="eventDateTime">' + dateFormat  + '</td><td>' + venue + '</td><td>' + location + '</td>');
-											
-												var rsvpCell = $('<td>');
-												var rsvpButton = $('<button>');
-												rsvpButton.addClass('rsvp btn-rsvp');
-												rsvpButton.attr('data-id', curEvent.id)
-													.attr('data-uri', curEvent.uri)
-													.attr('data-event-title', curEvent.displayName.replace('Unknown venue', 'TBA'))
-													.attr('data-lineup', lineup)
-													.attr('data-date', curEvent.start.datetime == null ? curEvent.start.date : curEvent.start.datetime)
-													.attr('data-venue-id', curEvent.venue.id)
-													.attr('data-venue-name', curEvent.venue.displayname)
-													.attr('data-state', curEvent.venue.metroArea.state == undefined ? '' : curEvent.venue.metroArea.state.displayName)
-													.attr('data-target', '#rsvpModal')
-													.text('RSVP');
-						
-												// if user is not logged in, add the tooltip stuff
-												if($('.user-info').text().length === 0) {
-													rsvpButton.attr('data-placement', 'top')
-														.attr('rel', 'tooltip')
-														.attr('title', 'You must be signed in to RSVP');
-												}
-													
-												$('#resultsTable > tbody').append(tr.append(rsvpCell.append(rsvpButton)));
-												$('#containerHead, #results').removeClass('hidden');
-												$('.results-table-wrapper').slideDown(200);
+
+														var viewRsvpsButton = $('<button class="btn-rsvp">').attr('onClick', 'location.href=\'view-rsvps.html?event=' + curEvent.id + '\'')
+															.text('View RSVPs for This Event');
+														$('#events').append(eventDiv.append(eventDivHeader.append(eventDivTitle)).append(eventDivBody.append(rsvpButton).append(viewRsvpsButton)));
+														//$('#resultsTable > tbody').append(tr.append(rsvpCell.append(rsvpButton)));
+														$('#containerHead, #results').removeClass('hidden');
+													//$('.results-table-wrapper').slideDown(200);
+
+													})
+													.fail(function(error) {
+														$('#results').append('<p class="apiError">An error occurred while retrieving event data from the API :(');
+													});	
 											}								
 										} else {
 											$('#containerHead').removeClass('hidden');
@@ -173,45 +184,38 @@ $(document).ready(function() {
 	});
 
 	$('#rsvpModal').on('show.bs.modal', function (event) {
-		$('#rsvpForm').removeClass('hidden');
-		$('#alreadyRSVPed').addClass('hidden');
-		$('#onRSVP').addClass('hidden');
+		$('#rsvp-container, #rsvpSubmit').removeClass('hidden');
+		$('#alreadyRSVPed, #onRSVP').addClass('hidden');
 		var button = $(event.relatedTarget);
 		var venueId = button.data('venue-id');
 		var venueName = button.data('venue-name');
+		var venueWebsite = button.data('venue-website');
 		var street, zip, city, country;
 		if (venueId) {
-			$.ajax('https://api.songkick.com/api/3.0/venues/' + venueId + '.json?apikey=' + apiKey)
-				.done(function (response) {
-					var curVenue = response.resultsPage.results.venue;
-					street = curVenue.street;
-					zip = curVenue.zip;
-					city = curVenue.city.displayName;
-					country = curVenue.city.country.displayName;
-					venueName = curVenue.displayName;
-					modal.find('#rsvpStreet').text(street);
-					modal.find('#rsvpZip').text(zip);
-					if (venueName !== 'Unknown venue') {
-						venueName = curVenue.displayName;
-						$('#rsvpShowVenue').show();
-					} else {
-						venueName = '';
-						$('#rsvpShowVenue').hide();
-					}
-					modal.find('#rsvpShowVenue').text(venueName);
-					modal.find('#rsvpCity').text(city);
-					if(state.length) {
-						modal.find('#rsvpState').text(', ' + state);
-					} else {
-						modal.find('#rsvpState').empty();
-					}
-					modal.find('#rsvpCountry').text(country);
-				})
-				.fail(function(error) {
-					$('#results').append('<p class="apiError">An error occurred while retrieving event data from the API :(');
-				});
+			street = button.data('venue-street');
+			zip = button.data('zip');
+			city = button.data('venue-city');
+			state = button.data('state');
+			country = button.data('country');
+			venueName = button.data('venue-name');
+			$('#rsvpStreet').text(street);
+			$('#rsvpZip').text(zip);
+			if (venueName !== 'Unknown venue') {
+				$('#rsvpShowVenue').show();
+			} else {
+				venueName = '';
+				$('#rsvpShowVenue').hide();
+			}
+			$('#rsvpShowVenue').text(venueName);
+			$('#rsvpCity').text(city);
+			if(state.length) {
+				$('#rsvpState').text(', ' + state);
+			} else {
+				$('#rsvpState').empty();
+			}
+			$('#rsvpCountry').text(country);
 		} else {
-			$('#rsvpShowVenue').text('TBA');
+			$('#rsvpShowVenue').text('N/A');
 			$('#rsvpStreet').empty();
 			$('#rsvpZip').empty();
 			$('#rsvpCity').empty();
@@ -225,18 +229,24 @@ $(document).ready(function() {
 		var lineup = button.data('lineup');
 		var showDate = button.data('date');
 		var state = button.data('state');
+		var age = button.data('age');
 		var modal = $(this);
+		$('#ageRestriction').text(age);
+		if(venueWebsite) {
+			$('#venue-website').html('<a href="' + venueWebsite + '" target="_blank">Venue website</a>');
+		} else {
+			$('#venue-website').empty();
+		}
 		modal.find('#eventId').val(id);
 		modal.find('#eventUri').val(uri);
 		modal.find('#rsvpTitle').text(title);
 		modal.find('#datetime').val(moment(showDate).format('X'));
-		//get number of RSVPs for each event, and append it to the td
 						
 		database.ref('/rsvps').orderByChild('uid').equalTo(userId).once('value', function(snapshot) {
 			if(snapshot.val()) {
 				snapshot.forEach(function(child) {
 					if (child.val().eventId == id.toString()) {
-						$('#rsvpForm').addClass('hidden');
+						$('#rsvp-container, #rsvpSubmit').addClass('hidden');
 						$('#alreadyRSVPed').removeClass('hidden');
 					}
 				});

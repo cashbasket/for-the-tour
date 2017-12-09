@@ -4,6 +4,14 @@ body {
     line-height: 1.3;
 }
 
+a {
+    text-decoration: underline;
+}
+
+.container {
+    max-width: 1040px;
+}
+
 strong {
     font-weight: bold;
 }
@@ -140,6 +148,7 @@ p {
     padding: 7px 10px;
     border: solid #41494e 1px;
     text-decoration: none;
+    margin-right: 10px;
 }
 
 .btn-rsvp:hover {
@@ -178,29 +187,50 @@ p {
     font-size: 16px;
 }
 
-td.eventTitle {
+.panel-event {
+    border: 1px solid #41494e;
+}
+
+.panel-event > .panel-heading {
+    background-color: #41494e;
+}
+
+.panel-event > .panel-heading > .panel-title {
+    color: #ffffff;
     font-family: 'Fira Sans Condensed', sans-serif;
-    font-size: 18px;
+    font-size: 24px;
     font-weight: 600;
-    color: #fff;
 }
 
-.table-striped>tbody>tr:nth-of-type(odd) {
-    background-color: #f9f9f9;
+.panel-event > .panel-body {
+    background-color: #f5f5f5;
+}
+.panel-event > .panel-body > h4 {
+    font-weight: 600;
+    font-size: 1.2em;
 }
 
-.table-striped>tbody>tr:nth-of-type(even) {
-    background-color: #ffffff;
+div.performers {
+    margin: 0 auto;
+    width: 75%;    
 }
 
-.table-striped>tbody>tr:nth-of-type(odd)>td.eventTitle {
-    background-color: #7f8e99;
-    border-color: #41494e;
+.hideContent {
+    overflow: hidden;
+    line-height: 1em;
+    height: 2em;
 }
 
-.table-striped>tbody>tr:nth-of-type(even)>td.eventTitle {
-    background-color: #919ea8;
-    border-color: #41494e;
+.showContent {
+    line-height: 1em;
+    height: auto;
+}
+.showContent{
+    height: auto;
+}
+
+.blue {
+    color: #0000ff;
 }
 
 @media screen and (max-width: 767px) {
