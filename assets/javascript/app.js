@@ -12,7 +12,6 @@ firebase.auth().onAuthStateChanged(function(user) {
 		currentUser = '';
 		userId = '';
 	}
-	
 });
 
 function onRsvp() {
@@ -43,6 +42,70 @@ function checkForRsvp(eventId, message, fn) {
 			fn(eventId, message);
 		}
 	});
+}
+
+function getEventInfo(eventId, fn) {
+	$.ajax('https://api.songkick.com/api/3.0/events/' + eventId + '.json?apikey=' + apiKey)
+		.done(function (eventResponse) {
+			var curEvent = eventResponse.resultsPage.results.event;
+
+			var dateFormat = curEvent.start.datetime == null ? 
+				moment(curEvent.start.date).format('M/D/YYYY') :
+				moment(curEvent.start.datetime).format('M/D/YYYY @ h:mma');
+			var lineup = '';
+			var location = curEvent.location.city;
+			var venue = curEvent.venue.displayName !== 'Unknown venue'? curEvent.venue.displayName : 'N/A';
+
+			for (var l=0; l < curEvent.performance.length; l++) {
+				lineup += curEvent.performance[l].artist.displayName;
+				if (l < curEvent.performance.length - 1 ) {
+					lineup += ', ';
+				}
+			}
+
+			var eventDiv = $('<div class="panel panel-event event">');
+			var eventDivHeader = $('<div class="panel-heading">');
+			var eventDivTitle = $('<h3 class="panel-title">').text(curEvent.displayName.replace('Unknown venue', 'TBA'));
+			var eventDivBody = $('<div class="panel-body">');
+			eventDivBody.html('<h4>Performer(s)</h4><p>' + lineup + '</p><h4>Date &amp; Time</h4><p>' + dateFormat + '</p><h4>Venue</h4><p>' + venue + '</p><h4>Location</h4><p>' + location + '</p>');
+
+			//var rsvpCell = $('<td>');
+			var rsvpButton = $('<button>');
+			rsvpButton.addClass('rsvp btn-rsvp');
+			rsvpButton.attr('data-id', curEvent.id)
+				.attr('data-venue-website', curEvent.venue.website)
+				.attr('data-event-title', curEvent.displayName.replace('Unknown venue', 'TBA'))
+				.attr('data-lineup', lineup)
+				.attr('data-date', curEvent.start.datetime == null ? curEvent.start.date : curEvent.start.datetime)
+				.attr('data-venue-id', curEvent.venue.id)
+				.attr('data-venue-name', curEvent.venue.displayName)
+				.attr('data-venue-street', curEvent.venue.street)
+				.attr('data-venue-city', curEvent.venue.city ? curEvent.venue.city.displayName : curEvent.venue.metroArea.displayName)
+				.attr('data-state', curEvent.venue.metroArea.state == undefined ? '' : curEvent.venue.metroArea.state.displayName)
+				.attr('data-zip', curEvent.venue.zip ? curEvent.venue.zip : '')
+				.attr('data-country', curEvent.venue.city ? curEvent.venue.city.country.displayName :  curEvent.venue.metroArea.country.displayName)
+				.attr('data-age', curEvent.ageRestriction ? curEvent.ageRestriction : 'None')
+				.attr('data-target', '#rsvpModal')
+				.text('More Info / RSVP');
+		
+			// if user is not logged in, add the tooltip stuff
+			if($('.user-info').text().length === 0) {
+				rsvpButton.attr('data-placement', 'top')
+					.attr('rel', 'tooltip')
+					.attr('title', 'You must be signed in to RSVP');
+			}
+
+			var viewRsvpsButton = $('<button id="viewRsvp-' + curEvent.id +'" class="btn-rsvp hidden">').attr('onClick', 'location.href=\'view-rsvps.html?event=' + curEvent.id + '\'')
+				.text('View RSVPs for This Event');
+			$('#events').append(eventDiv.append(eventDivHeader.append(eventDivTitle)).append(eventDivBody.append(rsvpButton).append(viewRsvpsButton)));
+		
+			$('#containerHead, #results').removeClass('hidden');
+			
+			fn(eventId);
+		})
+		.fail(function(error) {
+			$('#results').append('<p class="apiError">An error occurred while retrieving event data from the API :(');
+		});
 }
 
 $(document).ready(function() {
@@ -86,7 +149,6 @@ $(document).ready(function() {
 						}
 						
 						if (touringArtistIds.length) {
-							
 							for (var j=0; j < touringArtistIds.length; j++) {
 								$.ajax('https://api.songkick.com/api/3.0/artists/' + touringArtistIds[j] + '/calendar.json?apikey=' + apiKey)
 									.done(function (calResponse) {
@@ -95,67 +157,13 @@ $(document).ready(function() {
 											for (var k=0; k < events.length; k++) {
 											//loop through events
 												var curEventId = events[k].id;
-												$.ajax('https://api.songkick.com/api/3.0/events/' + curEventId + '.json?apikey=' + apiKey)
-													.done(function (eventResponse) {
-														var curEvent = eventResponse.resultsPage.results.event;
-
-														var dateFormat = curEvent.start.datetime == null ? 
-															moment(curEvent.start.date).format('M/D/YYYY') :
-															moment(curEvent.start.datetime).format('M/D/YYYY @ h:mma');
-														var lineup = '';
-														var location = curEvent.location.city;
-														var venue = curEvent.venue.displayName !== 'Unknown venue'? curEvent.venue.displayName : 'N/A';
-		
-														for (var l=0; l < curEvent.performance.length; l++) {
-															lineup += curEvent.performance[l].artist.displayName;
-															if (l < curEvent.performance.length - 1 ) {
-																lineup += ', ';
-															}
+												getEventInfo(curEventId, function(curEventId) {
+													rsvpsRef.orderByChild('eventId').equalTo(curEventId.toString()).once('value', function(snapshot) {
+														if(snapshot.val()) {
+															$('#viewRsvp-' + curEventId).removeClass('hidden');
 														}
-	
-														var eventDiv = $('<div class="panel panel-event event">');
-														var eventDivHeader = $('<div class="panel-heading">');
-														var eventDivTitle = $('<h3 class="panel-title">').text(curEvent.displayName.replace('Unknown venue', 'TBA'));
-														var eventDivBody = $('<div class="panel-body">');
-														eventDivBody.html('<h4>Performer(s)</h4><p>' + lineup + '</p><h4>Date &amp; Time</h4><p>' + dateFormat + '</p><h4>Venue</h4><p>' + venue + '</p><h4>Location</h4><p>' + location + '</p>');
-												
-														//var rsvpCell = $('<td>');
-														var rsvpButton = $('<button>');
-														rsvpButton.addClass('rsvp btn-rsvp');
-														rsvpButton.attr('data-id', curEvent.id)
-															.attr('data-venue-website', curEvent.venue.website)
-															.attr('data-event-title', curEvent.displayName.replace('Unknown venue', 'TBA'))
-															.attr('data-lineup', lineup)
-															.attr('data-date', curEvent.start.datetime == null ? curEvent.start.date : curEvent.start.datetime)
-															.attr('data-venue-id', curEvent.venue.id)
-															.attr('data-venue-name', curEvent.venue.displayName)
-															.attr('data-venue-street', curEvent.venue.street)
-															.attr('data-venue-city', curEvent.venue.city ? curEvent.venue.city.displayName : curEvent.venue.metroArea.displayName)
-															.attr('data-state', curEvent.venue.metroArea.state == undefined ? '' : curEvent.venue.metroArea.state.displayName)
-															.attr('data-zip', curEvent.venue.zip ? curEvent.venue.zip : '')
-															.attr('data-country', curEvent.venue.city ? curEvent.venue.city.country.displayName :  curEvent.venue.metroArea.country.displayName)
-															.attr('data-age', curEvent.ageRestriction ? curEvent.ageRestriction : 'None')
-															.attr('data-target', '#rsvpModal')
-															.text('More Info / RSVP');
-														
-														// if user is not logged in, add the tooltip stuff
-														if($('.user-info').text().length === 0) {
-															rsvpButton.attr('data-placement', 'top')
-																.attr('rel', 'tooltip')
-																.attr('title', 'You must be signed in to RSVP');
-														}
-
-														var viewRsvpsButton = $('<button class="btn-rsvp">').attr('onClick', 'location.href=\'view-rsvps.html?event=' + curEvent.id + '\'')
-															.text('View RSVPs for This Event');
-														$('#events').append(eventDiv.append(eventDivHeader.append(eventDivTitle)).append(eventDivBody.append(rsvpButton).append(viewRsvpsButton)));
-														//$('#resultsTable > tbody').append(tr.append(rsvpCell.append(rsvpButton)));
-														$('#containerHead, #results').removeClass('hidden');
-													//$('.results-table-wrapper').slideDown(200);
-
-													})
-													.fail(function(error) {
-														$('#results').append('<p class="apiError">An error occurred while retrieving event data from the API :(');
-													});	
+													});
+												});
 											}								
 										} else {
 											$('#containerHead').removeClass('hidden');
