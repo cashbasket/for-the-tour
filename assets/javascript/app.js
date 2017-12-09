@@ -128,6 +128,7 @@ $(document).ready(function() {
 			$('#result-header-query').text(band);
 			$('#homeSearch, .no-results, #results, #containerHead').addClass('hidden');
 			$('.searching').removeClass('hidden');
+			$('#homepage').removeClass('hidden');
 			$('.results-table-wrapper, .apiError').hide();
 			$.ajax('https://api.songkick.com/api/3.0/search/artists.json?apikey=' + apiKey + '&query=' + encodeURIComponent(band))
 				.done(function (response) {
