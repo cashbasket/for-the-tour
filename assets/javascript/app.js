@@ -23,13 +23,18 @@ function onRsvp() {
 }
 
 function checkForRsvp(eventId, message, fn) {
-	usersRef.child(userId).set({
-		name: currentUser.displayName,
-		email: currentUser.email,
-		photoUrl: currentUser.photoURL
+	usersRef.once('value', function(snapshot) {
+		if (!snapshot.child(userId).exists()) {
+			usersRef.child(userId).set({
+				name: currentUser.displayName,
+				email: currentUser.email,
+				photoUrl: currentUser.photoURL
+			});
+		}
 	});
+	
 	var alreadyRsvped = false;
-	rsvpsRef.orderByChild('uid').equalTo(userId).once('value', function(snapshot) {
+	database.ref('/users/' + userId + '/user-rsvps').once('value', function(snapshot) {
 		const userData = snapshot.val();
 		if(userData) {
 			snapshot.forEach(function(child) {
@@ -249,7 +254,7 @@ $(document).ready(function() {
 		modal.find('#rsvpTitle').text(title);
 		modal.find('#datetime').val(moment(showDate).format('X'));
 						
-		database.ref('/rsvps').orderByChild('uid').equalTo(userId).once('value', function(snapshot) {
+		database.ref('/users/' + userId + '/user-rsvps').once('value', function(snapshot) {
 			if(snapshot.val()) {
 				snapshot.forEach(function(child) {
 					if (child.val().eventId == id.toString()) {
@@ -288,15 +293,19 @@ $(document).ready(function() {
 		var message = $('.ql-editor').html();
 
 		checkForRsvp(eventId, message, function(eventId, message) {
-			database.ref('/rsvps').push({
+			var rsvp = {
 				uid: userId,
 				eventId: eventId,
 				message: message
-			}, function(errors) {
-				if (!errors) {
-					$('#viewRsvp-' + eventId).removeClass('hidden');
-					onRsvp();
-				}
+			};
+			// push rsvp to main rsvps node and user's personal rsvps sub-node
+			database.ref('/rsvps').push(rsvp, function(errors) {
+				database.ref('/users/' + userId + '/user-rsvps').push(rsvp, function() {
+					if (!errors) {
+						$('#viewRsvp-' + eventId).removeClass('hidden');
+						onRsvp();
+					}
+				});		
 			});
 		});
 	});
