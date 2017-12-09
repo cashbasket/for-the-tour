@@ -2,6 +2,7 @@ body {
 	background-color: #dbe5ec;
     font-family: 'Roboto', sans-serif;
     line-height: 1.3;
+    padding-top: 70px;
 }
 
 a {
@@ -47,6 +48,7 @@ p {
 
 .home-search {
     text-align: center;
+
 }
 
 .home-search p {
@@ -89,6 +91,8 @@ p {
   vertical-align: middle;
   float: right;
   color: white;
+  font-family: 'Roboto';
+
 }
 
 .g-signin2 {
@@ -103,6 +107,14 @@ p {
 
 .navbar {
   font-family: 'Bungee', cursive;
+}
+
+.footer-image {
+    height: 40px;
+    width: 115px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .results-table {
