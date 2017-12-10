@@ -74,7 +74,7 @@ function getEventInfo(eventId, fn) {
 			var eventDivBody = $('<div class="panel-body">');
 			var eventDivRow = $('<div class="row">');
 			var detailsCol = $('<div class="col-md-7">');
-			var rsvpsCol = $('<div class="col-md-5">');
+			var rsvpsCol = $('<div class="col-md-5 hidden">').attr('id', 'rsvpCol-' + curEvent.id);
 			var detailsDiv = $('<div class="event-details">');
 			var rsvpsDiv = $('<div id="rsvp-' + curEvent.id + '" class="event-rsvps">');
 			var rsvpsHeader = $('<h3>').text('Recent RSVPs');
@@ -159,6 +159,7 @@ $(document).ready(function() {
 												getEventInfo(curEventId, function(curEventId) {
 													rsvpsRef.orderByChild('eventId').equalTo(curEventId.toString()).limitToLast(10).on('value', function(snapshot) {
 														if(snapshot.val()) {
+															$('#rsvpCol-' + curEventId).removeClass('hidden');
 															$('#no-results-' + curEventId).hide();
 															$('#rsvp-' + curEventId).empty().append('<h3>Recent RSVPs</h3>');
 															snapshot.forEach(function(childSnapshot) {
@@ -169,7 +170,8 @@ $(document).ready(function() {
 																	if (userSnap.val()) {
 																		rsvpName = $('<strong>').text(userSnap.val().name);
 																		rsvpPhoto = $('<img>').attr('src', userSnap.val().photoUrl).addClass('rsvp-img pull-right');
-																		$('#rsvp-' + curEventId).append(rsvpRow.append(rsvpCol.append(rsvpName).append(rsvpPhoto).append(childSnapshot.val().message)));
+																		var message = childSnapshot.val().message != '<p><br></p>' ? childSnapshot.val().message : '<p><em>(This person is no fun and didn\'t leave a message.)</em></p>';
+																		$('#rsvp-' + curEventId).append(rsvpRow.append(rsvpCol.append(rsvpName).append(rsvpPhoto).append(message)));
 																	}
 																});
 															});
@@ -300,6 +302,11 @@ $(document).ready(function() {
 			editor.deleteText(maxRsvpChars, editor.getLength());
 		}
 		$('#charsLeft').text(maxRsvpChars - editor.getLength() + 1);
+		if(editor.getLength() > 200) {
+			$('#charsLeft').addClass('red');
+		} else {
+			$('#charsLeft').removeClass('red');
+		}
 	});
 
 	$('#rsvpForm').on('submit', function (event) {
