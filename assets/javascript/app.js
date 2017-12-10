@@ -292,7 +292,7 @@ $(document).ready(function() {
 	});
 
 	$('#cancelRsvp').on('click', function () {
-		$('.ql-editor > p').empty();
+		$('.ql-editor').html('<p></p>');
 		$('.ql-editor').addClass('ql-blank');
 	});
 
@@ -313,7 +313,7 @@ $(document).ready(function() {
 		event.preventDefault();
 		//Add Event (if necessary) and RSVP to Firebase
 		var eventId = $('#eventId').val();
-		var message = $('.ql-editor').html();
+		var message = $('.ql-editor').html().replace('ql-indent-1', 'indent-1').replace('ql-indent-2', 'indent-2');
 
 		checkForRsvp(eventId, message, function(eventId, message) {
 			var rsvp = {
