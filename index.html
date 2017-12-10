@@ -85,6 +85,9 @@
         <div class="modal fade" id="rsvpModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
+                    <div id="venueLoading">
+                        <i class="fas fa-spinner fa-spin fa-3x"></i>
+                    </div>
                     <form id="rsvpForm">
                         <div class="modal-body">
                             <input type="hidden" id="eventId" />
@@ -95,10 +98,10 @@
                             </figure>
                             <h2 id="rsvpTitle"></h2>
                             <div id="showDetails">
-                                <p><strong>Date/Time:</strong><br>
-                                <span id="rsvpShowDate"></span></p>
-                                <p><strong>Performer(s):</strong><br>
-                                <span id="rsvpLineup"></span></p>
+                                <h4>Date/Time:</h4>
+                                <p id="rsvpShowDate"></p>
+                                <h4>Performer(s):</h4>
+                                <p id="rsvpLineup"></p>
                                 
                                 <div class="row">
                                     <div class="col-md-6">
@@ -109,9 +112,6 @@
                                         <div id="rsvpCountry"></div>
                                     </div>
                                     <div class="col-md-6">
-                                        <h4>Age Restriction:</h4>
-                                        <div id="ageRestriction"></div>
-                                        <br>
                                         <div id="venue-website"></div>
                                         <div id="addToCalendarLink" class="hidden">
                                         </div>
@@ -335,9 +335,6 @@
             });
         }
         $(document).ready(function() {            
-            $('body').on('click', '.rsvp', function() {
-                $('#rsvpModal').modal({backdrop: 'static', keyboard: false}, $(this));
-            });
             $('body').on('click', '.sign-out', function() {
                 signOut();
             });
