@@ -6,7 +6,7 @@
     <meta name="google-signin-scope" content="profile email https://www.googleapis.com/auth/calendar">
     <meta name="google-signin-client_id" content="725149234874-5pcbriu0k6nsqe1mglf4oonqcel1ibpn.apps.googleusercontent.com">
     <title>For the Tour</title>
-    <script src="https://use.fontawesome.com/6207f4ce66.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.1/js/all.js"></script>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -90,7 +90,7 @@
                             <input type="hidden" id="eventId" />
                             <input type="hidden" ide="eventUri" />
                             <input type="hidden" id="datetime" />
-                            <figure id="userPhotoFigure" class="pull-right clearfix hidden">
+                            <figure id="userPhotoFigure" class="pull-right clearfix hidden user-photo">
                                 <figcaption>(This is you)</figcaption>
                             </figure>
                             <h2 id="rsvpTitle"></h2>
@@ -214,7 +214,7 @@
                 $('#loginRSVPs').removeClass('hidden');
                 $('#addToCalendarLink').removeClass('hidden');
                 var calendarLink = $('<a class="add-to-calendar">').text('Add to Google Calendar');
-                $('#addToCalendarLink').append(calendarLink);
+                $('#addToCalendarLink').append('<i class="far fa-calendar-plus"></i> ').append(calendarLink);
             }
         }
         function isUserEqual(googleUser, firebaseUser) {
