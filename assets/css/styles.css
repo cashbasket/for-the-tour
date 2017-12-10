@@ -258,6 +258,15 @@ div.performers {
     padding: 0;
 }
 
+#rsvpModal  h4 {
+    margin-bottom: 0;
+}
+
+#venueLoading {
+    padding: 30px 0;
+    text-align:center;
+}
+
 .rsvp-row > .col-md-12 > ul { 
     list-style-type: disc; 
     list-style-position: inside; 
