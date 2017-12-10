@@ -209,12 +209,22 @@ $(document).ready(function() {
 		if ($('.user-info').text().length) {
 			$('#rsvp-container, #rsvpSubmit').removeClass('hidden');
 		}
-		$('#alreadyRSVPed, #onRSVP').addClass('hidden');
+		$('#addToCalendarLink').removeClass('hidden');
+		$('#alreadyRSVPed, #onRSVP, #eventAdded').addClass('hidden');
 		var button = $(event.relatedTarget);
 		var venueId = button.data('venue-id');
 		var venueName = button.data('venue-name');
 		var venueWebsite = button.data('venue-website');
 		var street, zip, city, country;
+		var id = button.data('id');
+		var uri = button.data('uri');
+		var title = button.data('event-title');
+		var lineup = button.data('lineup');
+		var showDate = button.data('date');
+		var state = button.data('state');
+		var age = button.data('age');
+		var modal = $(this);
+
 		if (venueId) {
 			street = button.data('venue-street');
 			zip = button.data('zip');
@@ -247,24 +257,18 @@ $(document).ready(function() {
 			$('#rsvpCountry').empty();
 		}		
 
-		var id = button.data('id');
-		var uri = button.data('uri');
-		var title = button.data('event-title');
-		var lineup = button.data('lineup');
-		var showDate = button.data('date');
-		var state = button.data('state');
-		var age = button.data('age');
-		var modal = $(this);
+		
 		$('#ageRestriction').text(age);
 		if(venueWebsite) {
 			$('#venue-website').html('<a href="' + venueWebsite + '" target="_blank">Venue website</a>');
 		} else {
 			$('#venue-website').empty();
 		}
+
 		modal.find('#eventId').val(id);
 		modal.find('#eventUri').val(uri);
 		modal.find('#rsvpTitle').text(title);
-		modal.find('#datetime').val(moment(showDate).format('X'));
+		modal.find('#datetime').val(showDate);
 						
 		database.ref('/users/' + userId + '/user-rsvps').once('value', function(snapshot) {
 			if(snapshot.val()) {
