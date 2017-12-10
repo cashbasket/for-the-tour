@@ -13,6 +13,16 @@ a {
     max-width: 1040px;
 }
 
+.site {
+	display: flex;
+	min-height: 100vh;
+	flex-direction: column;
+}
+
+.site-content {
+	flex: 1;
+}
+
 strong {
     font-weight: bold;
 }
@@ -274,6 +284,15 @@ div.performers {
     height: 75px;
     border-radius: 50%;
     margin: 0 0 15px 15px;
+}
+
+.add-to-calendar {
+    cursor: pointer;
+}
+
+footer {
+    background-color: black;
+    padding: 10px 0;
 }
 
 @media screen and (max-width: 767px) {
