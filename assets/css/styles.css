@@ -268,18 +268,11 @@ div.performers {
     list-style-position: inside; 
 }
 
-.rsvp-row > .col-md-12 > ul > li > ul, 
-.rsvp-row > .col-md-12 > ol > li > ul { 
-    list-style-type: circle; 
-    list-style-position: inside; 
-    margin-left: 15px; 
-}
-
-.rsvp-row > .col-md-12 > ol > li > ol, 
-.rsvp-row > .col-md-12 > ul > li > ol { 
-    list-style-type: lower-latin; 
-    list-style-position: inside; 
-    margin-left: 15px; 
+.rsvp-row > .col-md-12 > blockquote {
+    padding: 10px 20px;
+    margin: 0 0 20px;
+    font-size: 17.5px;
+    border-left: 5px solid #41494e;
 }
 
 .indent-1 {
@@ -338,6 +331,11 @@ div.event-rsvps > h3 {
     text-align: center;
 }
 
+#userPhotoFigure > img {
+    border: 1px solid #000;
+    border-radius: 50%;
+}
+
 .rsvp-img {
     width: 75px;
     height: 75px;
@@ -345,8 +343,9 @@ div.event-rsvps > h3 {
     margin: 0 0 15px 15px;
 }
 
-.add-to-calendar {
+#addToCalendarLink {
     cursor: pointer;
+    padding-top: 5px;
 }
 
 footer {

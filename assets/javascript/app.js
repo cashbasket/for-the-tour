@@ -262,7 +262,7 @@ $(document).ready(function() {
 		
 		$('#ageRestriction').text(age);
 		if(venueWebsite) {
-			$('#venue-website').html('<a href="' + venueWebsite + '" target="_blank">Venue website</a>');
+			$('#venue-website').html('<i class="far fa-bookmark"></i> <a href="' + venueWebsite + '" target="_blank">Venue website</a>');
 		} else {
 			$('#venue-website').empty();
 		}
