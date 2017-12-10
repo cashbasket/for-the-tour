@@ -208,7 +208,6 @@ $(document).ready(function() {
 										var events = calResponse.resultsPage.results.event;
 										if(events.length) {
 											for (var k=0; k < events.length; k++) {
-												//get details from artist calendar
 												var curEvent = events[k];
 												getArtistEvent(curEvent, function(curEvent) {
 													var curEventId = curEvent.id;
@@ -311,7 +310,6 @@ $(document).ready(function() {
 
 	$('#rsvpForm').on('submit', function (event) {
 		event.preventDefault();
-		//Add Event (if necessary) and RSVP to Firebase
 		var eventId = $('#eventId').val();
 		var message = $('.ql-editor').html().replace('ql-indent-1', 'indent-1').replace('ql-indent-2', 'indent-2');
 
