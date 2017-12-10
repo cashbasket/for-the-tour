@@ -258,6 +258,38 @@ div.performers {
     padding: 0;
 }
 
+.rsvp-row > .col-md-12 > ul { 
+    list-style-type: disc; 
+    list-style-position: inside; 
+}
+
+.rsvp-row > .col-md-12 > ol { 
+    list-style-type: decimal; 
+    list-style-position: inside; 
+}
+
+.rsvp-row > .col-md-12 > ul > li > ul, 
+.rsvp-row > .col-md-12 > ol > li > ul { 
+    list-style-type: circle; 
+    list-style-position: inside; 
+    margin-left: 15px; 
+}
+
+.rsvp-row > .col-md-12 > ol > li > ol, 
+.rsvp-row > .col-md-12 > ul > li > ol { 
+    list-style-type: lower-latin; 
+    list-style-position: inside; 
+    margin-left: 15px; 
+}
+
+.indent-1 {
+    margin-left: 15px;
+}
+
+.indent-2 {
+    margin-left: 30px;
+}
+
 .panel-body {
     padding: 0 !important;
 }
