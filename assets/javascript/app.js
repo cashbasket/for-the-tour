@@ -325,11 +325,22 @@ $(document).ready(function() {
 			database.ref('/rsvps').push(rsvp, function(errors) {
 				database.ref('/users/' + userId + '/user-rsvps').push(rsvp, function() {
 					if (!errors) {
-						$('#viewRsvp-' + eventId).removeClass('hidden');
+						database.ref('/events').orderByChild('eventId').equalTo(eventId).once('value', function(snapshot) {
+							if(!snapshot.val()) {
+								var event = {
+									eventId: eventId,
+									eventTitle: $('#rsvpTitle').text(),
+									eventStart: moment($('#datetime').val()).format('X')
+								};
+								database.ref('/events').push(event);
+								$('#viewRsvp-' + eventId).removeClass('hidden');
+							}
+						});
 						onRsvp();
 					}
 				});		
 			});
+			//push basic event info to firebase so we have it stored and can use it on the RSVPs page
 		});
 	});
 });

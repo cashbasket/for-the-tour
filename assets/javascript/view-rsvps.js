@@ -30,16 +30,18 @@ $.urlParam = function(name, url) {
 
 function getEventInfo(eventId) {
 	if(eventId !== undefined) {
-		$.ajax('https://api.songkick.com/api/3.0/events/' + eventId + '.json?apikey=' + apiKey)
-			.done(function(response) {
-				var event = response.resultsPage.results.event;
-				var eventTitle = event.displayName;
-				var eventHeader = $('<h2>').text('RSVPs for ' + eventTitle);
-
-				$('.event-detail-header').removeClass('hidden').append(eventHeader);
-			});
+		database.ref('/events').orderByChild('eventId').equalTo(eventId).once('value', function(eventSnap) {
+			if (eventSnap.val()) {
+				eventSnap.forEach(function(eventChild) {
+					var eventTitle = eventChild.val().eventTitle;
+					var eventHeader = $('<h2>').text('RSVPs for ' + eventTitle);
+					$('.event-detail-header').removeClass('hidden').append(eventHeader);
+				});
+			}
+		});  
 	}
 }
+
 function setColumns(width) {	
 	if (width >= 1040)
 		numCols = 4;
@@ -58,13 +60,11 @@ function setColumns(width) {
 	}
 }
 
-function buildMyItem(response, timestamp, message, index) {		
-	var event = response.resultsPage.results.event;
-	var name = event.displayName;
+function buildMyItem(title, timestamp, message, index) {		
 	var rsvpTime = moment.unix(timestamp).format('M/DD/YYYY @ h:mma');
 
 	var rsvpItem = $('<li>').attr('id', 'rsvp-' + index).addClass('rsvp-item');
-	var eventTitle = $('<h3>').text(name);
+	var eventTitle = $('<h3>').text(title);
 	var msgDiv = $('<div>').html(message);
 	var rsvpTimestamp = $('<em>').text(rsvpTime);
 
@@ -109,12 +109,13 @@ function viewRsvps(eventId) {
 			const userData = snapshot.val();
 			if(userData) {
 				snapshot.forEach(function(child) {
-					$.ajax('https://api.songkick.com/api/3.0/events/'+ child.val().eventId + '.json?apikey=' + apiKey)
-						.done(function(response) {
-							buildMyItem(response, child.val().timestamp, child.val().message, index);
-							index++;
-						});
-                    
+					database.ref('/events').orderByChild('eventId').equalTo(child.val().eventId.toString()).once('value', function(eventSnap) {
+						if (eventSnap.val()) {
+							eventSnap.forEach(function(eventChild) {
+								buildMyItem(eventChild.val().eventTitle, child.val().timestamp, child.val().message, index);
+							});
+						}
+					});                    
 				});
 			}
 		});
