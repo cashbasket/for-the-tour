@@ -270,21 +270,21 @@ $(document).ready(function() {
 	});
 
 	$('body').on('click', '.rsvp', function() {
-		$('#rsvpForm').hide();
-		$('#venueLoading').show();
+		$('#rsvpForm').addClass('hidden');
+		$('#venueLoading').removeClass('hidden');
 		$('#addToCalendarLink').removeClass('hidden');
 		$('#alreadyRSVPed, #onRSVP, #eventAdded').addClass('hidden');
 		var button = $(this);
 
 		getVenueInfo(button, function() {
-			$('#venueLoading').hide();
-			$('#rsvpForm').show();
-			if ($('.user-info').text().length) {
-				$('#rsvp-container, #rsvpSubmit').removeClass('hidden');
-			}
+			$('#venueLoading').addClass('hidden');
+			$('#rsvpForm').removeClass('hidden');
 		});
 						
 		database.ref('/users/' + userId + '/user-rsvps').once('value', function(snapshot) {
+			if ($('.user-info').text().length) {
+				$('#rsvp-container, #rsvpSubmit').removeClass('hidden');
+			}
 			if(snapshot.val()) {
 				snapshot.forEach(function(child) {
 					if (child.val().eventId == button.data('id').toString()) {
