@@ -52,6 +52,10 @@ h3 {
     margin-bottom: 1em;
 }
 
+.rsvp-item > h3 {
+    margin-bottom: 0.5em;
+}
+
 p {
     margin-bottom: 1em;
 }
@@ -247,6 +251,16 @@ div.performers {
 
 .event-details {
     padding: 15px !important;
+}
+
+.rsvp-results {
+    position: relative;
+}
+.rsvp-item {
+    background-color: #fff;
+    border: 1px solid #999;
+    border-radius: 5px;
+    padding: 10px;
 }
 
 .event-rsvps {
