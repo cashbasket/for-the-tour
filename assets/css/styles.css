@@ -23,6 +23,24 @@ a {
 	flex: 1;
 }
 
+h1.navbar-brand {
+	padding: 22px 0 15px 0;
+	font-size: 30px;
+}
+
+h1.navbar-brand > a,
+h1.navbar-brand > a:hover {
+	color: #fff;
+	text-decoration: none;
+}
+
+.home-search {
+    display: flex;
+    justify-content: center;
+    flex-direction:column;
+    min-height: 85vh;
+}
+
 strong {
     font-weight: bold;
 }
@@ -62,7 +80,21 @@ p {
 
 .home-search {
     text-align: center;
+}
 
+.navbar-toggle {
+	border: 1px solid #fff !important;
+}
+
+.navbar-toggle:hover,
+.navbar-toggle:active,
+.navbar-toggle:focus {
+	border-color: #fff;
+}
+
+#nav-items a,
+.navbar-button-text {
+	color: #fff;
 }
 
 .home-search p {
@@ -89,6 +121,10 @@ p {
     font-size: 1.5em;
 }
 
+#containerHead {
+    margin-top: 10px;
+}
+
 .searching {
     text-align: center;
     font-size: 20px;
@@ -96,6 +132,7 @@ p {
     line-height: 1.75;
     margin-top: 30px;
 }
+
 .sign-out {
     cursor: pointer;
     text-decoration: underline;
@@ -109,18 +146,9 @@ p {
 
 }
 
-.g-signin2 {
-  float:right;
-  vertical-align: middle;
-}
-
 .logo {
 	width: 66px;
 	height: 57px;
-}
-
-.navbar {
-  font-family: 'Bungee', cursive;
 }
 
 .footer-image {
@@ -129,18 +157,6 @@ p {
     display: block;
     margin-left: auto;
     margin-right: auto;
-}
-
-.results-table {
-	border: 1px solid #41494e;
-}
-
-.results-table > thead > tr > th {
-	background-color: #41494e;
-    color: #fff;
-    font-family: 'Fira Sans Condensed', sans-serif;
-    font-weight: bold;
-    border-bottom: 2px solid #41494e;
 }
 
 .main-image {
@@ -201,6 +217,10 @@ p {
 
 #messageText {
 	height: 130px;
+}
+
+.message-remaining {
+    margin-top: 5px;
 }
 
 .user-photo {
@@ -265,8 +285,8 @@ div.performers {
 
 .event-rsvps {
     background-color: #a1b8c7;
-    min-height: 260px;
-    max-height: 260px;
+    min-height: 212px;
+    max-height: 212px;
     overflow-y: auto;
     overflow-x: hidden;
     padding: 0;
@@ -281,14 +301,27 @@ div.performers {
     text-align:center;
 }
 
-.rsvp-row > .col-md-12 > ul { 
+.rsvp-row > .col-md-12 > p:last-of-type,
+.rsvp-item > div > p:last-of-type {
+    margin-bottom: 0;
+}
+
+.rsvp-item > .timestamp {
+    margin-top: 10px;
+}
+
+ul { 
     list-style-type: disc; 
     list-style-position: inside; 
 }
 
-.rsvp-row > .col-md-12 > ol { 
+ol { 
     list-style-type: decimal; 
     list-style-position: inside; 
+}
+
+.rsvp-list {
+    list-style-type: none;
 }
 
 .rsvp-row > .col-md-12 > blockquote {
@@ -339,13 +372,14 @@ div.event-rsvps > .rsvp-row:first-of-type:before {
     border-top: none;
 }
 
-div.rsvp-header > h3 {
+div.rsvp-header > h4 {
     background-color: #4c687c;
     color: #ffffff;
     margin-bottom: 0;
     padding: 5px 10px;
     text-align: center;
-    font-size: 1.5em;
+    font-size: 22px;
+    font-family: 'Fira Sans Condensed', sans-serif;
 }
 
 #userPhotoFigure > figcaption {
@@ -373,20 +407,11 @@ div.rsvp-header > h3 {
 
 footer {
     background-color: black;
+    margin-top: 20px;
     padding: 10px 0;
 }
 
 @media screen and (max-width: 767px) {
-    .alt-table-responsive {
-      width: 100%;
-      margin-bottom: 15px;
-      overflow-y: hidden;
-      overflow-x: auto;
-      -ms-overflow-style: -ms-autohiding-scrollbar;
-      border: 1px solid #dddddd;
-      -webkit-overflow-scrolling: touch;
-    }
-
     .sub-search {
         float: none;
     }

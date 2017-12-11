@@ -69,7 +69,7 @@ function getArtistEvent(curEvent, fn) {
 	var eventDivBody = $('<div class="panel-body">');
 	var eventDivRow = $('<div class="row">');
 	var detailsCol = $('<div class="col-md-7">');
-	var rsvpsCol = $('<div class="col-md-5 hidden">').attr('id', 'rsvpCol-' + curEvent.id);
+	var rsvpsCol = $('<div class="col-md-5 hidden rsvp-column">').attr('id', 'rsvpCol-' + curEvent.id);
 	var detailsDiv = $('<div class="event-details">');
 	var rsvpsDiv = $('<div id="rsvp-' + curEvent.id + '" class="event-rsvps">');
 	var rsvpsHeader = $('<h3>').text('Recent RSVPs');
@@ -94,7 +94,7 @@ function getArtistEvent(curEvent, fn) {
 
 	var rsvpHeaderRow = $('<div class="row">');
 	var rsvpHeaderCol = $('<div class="col-md-12 rsvp-header">');
-	var rsvpHeader = $('<h3>').text('Recent RSVPs');
+	var rsvpHeader = $('<h4>').text('Recent RSVPs');
 	$('#rsvpCol-' + curEvent.id).prepend(rsvpHeaderRow.append(rsvpHeaderCol.append(rsvpHeader)));
 
 	fn(curEvent);
@@ -165,7 +165,7 @@ function getVenueInfo(button, fn) {
 
 			fn();
 		})
-		.fail(function(error) {
+		.fail(function() {
 			$('#results').append('<p class="apiError">An error occurred while retrieving event data from the API :(');
 		});
 }
@@ -249,7 +249,7 @@ $(document).ready(function() {
 											$('.no-results').removeClass('hidden');
 										}
 									})
-									.fail(function(error) {
+									.fail(function() {
 										$('#results').append('<p class="apiError">An error occurred while retrieving event data from the API :(');
 									});
 							}
@@ -262,7 +262,7 @@ $(document).ready(function() {
 						$('.no-results').removeClass('hidden');
 					}
 				})
-				.fail(function (error) {
+				.fail(function () {
 					$('#results').append('<p class="apiError">An error occurred while retrieving artist data from the API :(');
 				});
 		} 
@@ -303,7 +303,7 @@ $(document).ready(function() {
 	});
 
 	const maxRsvpChars = 280;
-	editor.on('text-change', function (delta, old, source) {
+	editor.on('text-change', function () {
 		if (editor.getLength() > maxRsvpChars) {
 			editor.deleteText(maxRsvpChars, editor.getLength());
 		}

@@ -1,6 +1,5 @@
 var currentUser, userId;
 var columnLefts = [];
-var apiKey = 'QHUtsj2TFotzVJpp';
 var lastInColHeight, lastInColTop, left, colWidth, numCols;
 const gutterWidth = 15;
 var index = 0;
@@ -43,17 +42,13 @@ function getEventInfo(eventId) {
 }
 
 function setColumns(width) {	
-	if (width >= 1040)
-		numCols = 4;
-	else if (width >= 768)
+	if (width >= 768)
 		numCols = 3;
 	else if (width >= 480)
 		numCols = 2;
 	else
 		numCols = 1;
-
 	colWidth = ((width - (gutterWidth * (numCols - 1))) / numCols);
-	
 	columnLefts = [];
 	for(var i = 0; i < numCols; i++) {
 		columnLefts.push((colWidth + gutterWidth) * i);
@@ -66,20 +61,22 @@ function buildMyItem(title, timestamp, message, index) {
 	var rsvpItem = $('<li>').attr('id', 'rsvp-' + index).addClass('rsvp-item');
 	var eventTitle = $('<h3>').text(title);
 	var msgDiv = $('<div>').html(message);
+	var timestampDiv = $('<div class="timestamp" />');
 	var rsvpTimestamp = $('<em>').text(rsvpTime);
 
-	$('.rsvp-list').append(rsvpItem.append(eventTitle).append(msgDiv).append(rsvpTimestamp));
+	$('.rsvp-list').append(rsvpItem.append(eventTitle).append(msgDiv).append(timestampDiv.append(rsvpTimestamp)));
 
 	positionItem(index);
 }
 
 function buildItem(name, photo, timestamp, message, index) {
-	var rsvpTime = moment(timestamp).format('MM/DD/YYYY @ h:mma');	
+	var rsvpTime = moment.unix(timestamp).format('MM/DD/YYYY @ h:mma');	
 	var rsvpItem = $('<li>').attr('id', 'rsvp-' + index).addClass('rsvp-item');
 	var userName = $('<h3>').text(name);
 	var userPhoto = $('<img />').attr('src', photo).addClass('rsvp-img pull-right');
-	var rsvpTimestamp = $('<em>').text('RSVPed on ' + rsvpTime);
-	$('.rsvp-list').append(rsvpItem.append(userPhoto).append(userName).append(message).append(rsvpTimestamp));
+	var timestampDiv = $('<div class="timestamp" />');
+	var rsvpTimestamp = $('<em>').text(rsvpTime);
+	$('.rsvp-list').append(rsvpItem.append(userPhoto).append(userName).append(message).append(timestampDiv.append(rsvpTimestamp)));
 
 	positionItem(index);
 }
@@ -124,11 +121,11 @@ function viewRsvps(eventId) {
 		// EVENT RSVPS
 		database.ref('/rsvps').orderByChild('eventId').equalTo(eventId.toString()).on('value', function(snapshot) {
 			if(snapshot.val()) {
-				snapshot.forEach(function(childSnapshot) {
-					database.ref('/users/' + childSnapshot.val().uid).once('value', function(userSnap) {
+				snapshot.forEach(function(child) {
+					database.ref('/users/' + child.val().uid).once('value', function(userSnap) {
 						if (userSnap.val()) {
-							var message = childSnapshot.val().message != '<p><br></p>' ? childSnapshot.val().message : '<p><em>(This person is no fun and didn\'t leave a message.)</em></p>';
-							buildItem(userSnap.val().name, userSnap.val().photoUrl, userSnap.val().timestamp, message, index);
+							var message = child.val().message != '<p><br></p>' ? child.val().message : '<p><em>(This person is no fun and didn\'t leave a message.)</em></p>';
+							buildItem(userSnap.val().name, userSnap.val().photoUrl, child.val().timestamp, message, index);
 							index++;
 						}
 					});

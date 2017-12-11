@@ -16,25 +16,32 @@
     <link href="https://fonts.googleapis.com/css?family=Fira+Sans+Condensed:400,600,700|Roboto:400,400i,700,700i" rel="stylesheet">
 </head>
 <body>
-        <nav class="navbar navbar-inverse navbar-fixed-top"> 
-            <div class="container"> 
-                <div class="navbar-header"> 
-                    <button type=button class="collapsed navbar-toggle" data-toggle=collapse data-target=#bs-example-navbar-collapse-5 aria-expanded=false> 
-                    <span class=sr-only>Toggle navigation</span> 
-                    </button> 
-                    <a href="index.html" class="navbar-brand">For The Tour</a> 
-                </div> 
-                <ul class="nav navbar-nav hidden" id="loginRSVPs">
-                    <li class="active"><a href="view-rsvps.html">My RSVP's<span class="sr-only"></span></a></li>
-                </ul>
-                <div class="collapse navbar-collapse"> 
-                <p class="navbar-text navbar-right"><a href=# class=navbar-link>
-                    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
-                    <div class="user-info"></div>
-                </a></p> 
-                </div> 
-            </div> 
-        </nav> 
+        <header>
+            <nav class="navbar navbar-inverse navbar-fixed-top">
+                <div class="row">
+                    <div class="container">
+                        <div class="container-fluid">
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav-items" aria-expanded="false">
+                                    <span class="sr-only">Toggle navigation</span>
+                                    <span class="navbar-button-text">Menu</span>
+                                </button>
+                                <h1 id="homepage" class="navbar-brand"><a href=".">For the Tour</a></h1>
+                            </div>
+                            <div class="collapse navbar-collapse" id="nav-items">
+                                <ul class="nav navbar-nav hidden" id="loginRSVPs">
+                                    <li><a href="view-rsvps.html">My RSVPs</a></li>
+                                </ul>
+                                    <div class="navbar-text navbar-right">
+                                    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+                                    <div class="user-info"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
     <div class="container">
         <div class="event-detail-header hidden">
 
@@ -108,6 +115,7 @@
 
             if (isLoggedIn) {
                 $('.user-info').html( email + '</strong> (<a class="sign-out">Sign Out</a>)');
+                $('h1.navbar-brand').css('padding-top', '15px');
                 $('.g-signin2').hide();
                 $('.user-info').removeClass('hidden');
                 $('#userPhoto').html('<img src="' + photo + '" class="img-responsive" />');
@@ -135,6 +143,7 @@
                 isLoggedIn = false;
                 // hide user info and show sign-in button
                 $('.g-signin2').show();
+                $('h1.navbar-brand').css('padding-top', '22px');
                 $('.user-info').empty().addClass('hidden');
             });
         }
