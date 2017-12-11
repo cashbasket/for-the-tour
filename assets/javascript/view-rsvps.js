@@ -113,6 +113,7 @@ function viewRsvps(eventId) {
 						if (eventSnap.val()) {
 							eventSnap.forEach(function(eventChild) {
 								buildMyItem(eventChild.val().eventTitle, child.val().timestamp, child.val().message, index);
+								index++;
 							});
 						}
 					});                    
