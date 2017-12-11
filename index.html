@@ -93,9 +93,7 @@
                             <input type="hidden" id="eventId" />
                             <input type="hidden" ide="eventUri" />
                             <input type="hidden" id="datetime" />
-                            <figure id="userPhotoFigure" class="pull-right clearfix hidden user-photo">
-                                <figcaption>(This is you)</figcaption>
-                            </figure>
+                            <figure id="userPhotoFigure" class="pull-right clearfix hidden user-photo"></figure>
                             <h2 id="rsvpTitle"></h2>
                             <div id="showDetails">
                                 <h4>Date/Time:</h4>
@@ -210,7 +208,7 @@
                 $('.user-info').html( email + '</strong> (<a class="sign-out">Sign Out</a>)');
                 $('.g-signin2').hide();
                 $('.user-info').removeClass('hidden');
-                $('#userPhotoFigure').prepend('<img src="' + photo + '" class="img-responsive" />');
+                $('#userPhotoFigure').html('<img src="' + photo + '" class="img-responsive" />');
                 $('#loginRSVPs').removeClass('hidden');
                 $('#addToCalendarLink').removeClass('hidden');
                 var calendarLink = $('<a class="add-to-calendar">').text('Add to Google Calendar');

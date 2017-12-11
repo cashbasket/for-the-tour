@@ -31,21 +31,20 @@ function checkForRsvp(eventId, message, fn) {
 				photoUrl: currentUser.photoURL
 			});
 		}
-	});
-	
-	var alreadyRsvped = false;
-	database.ref('/users/' + userId + '/user-rsvps').once('value', function(snapshot) {
-		const userData = snapshot.val();
-		if(userData) {
-			snapshot.forEach(function(child) {
-				if (child.val().eventId == eventId) {
-					alreadyRsvped = true;
-				}
-			});
-		}
-		if (!alreadyRsvped) {
-			fn(eventId, message);
-		}
+		var alreadyRsvped = false;
+		database.ref('/users/' + userId + '/user-rsvps').once('value', function(snapshot) {
+			const userData = snapshot.val();
+			if(userData) {
+				snapshot.forEach(function(child) {
+					if (child.val().eventId == eventId) {
+						alreadyRsvped = true;
+					}
+				});
+			}
+			if (!alreadyRsvped) {
+				fn(eventId, message);
+			}
+		});
 	});
 }
 
@@ -89,7 +88,7 @@ function getArtistEvent(curEvent, fn) {
 		.attr('data-target', '#rsvpModal')
 		.text('More Info / RSVP');
 
-	var viewRsvpsButton = $('<button id="viewRsvp-' + curEvent.id +'" class="btn-rsvp hidden">').attr('onClick', 'location.href=\'view-rsvps.html?event=' + curEvent.id + '\'')
+	var viewRsvpsButton = $('<button id="viewRsvp-' + curEvent.id +'" class="btn-rsvp hidden">').attr('onClick', 'location.href=\'view-rsvps.html?eventId=' + curEvent.id + '\'')
 		.text('View RSVPs');
 	$('#events').append(eventDiv.append(eventDivHeader.append(eventDivTitle)).append(eventDivBody.append(eventDivRow.append(detailsCol.append(detailsDiv.append(rsvpButton).append(viewRsvpsButton))).append(rsvpsCol.append(rsvpsDiv.append(rsvpsHeader))))));
 
@@ -220,12 +219,14 @@ $(document).ready(function() {
 																var rsvpRow  = $('<div class="row rsvp-row">');
 																var rsvpCol = $('<div class="col-md-12">');
 																var rsvpName, rsvpPhoto;
+																var rsvpTimestamp = moment.unix(childSnapshot.val().timestamp).format('MM/DD/YYYY @ h:mma');
 																database.ref('/users/' + childSnapshot.val().uid).once('value', function(userSnap) {
 																	if (userSnap.val()) {
 																		rsvpName = $('<strong>').text(userSnap.val().name);
 																		rsvpPhoto = $('<img>').attr('src', userSnap.val().photoUrl).addClass('rsvp-img pull-right');
+																		rsvpTimestamp = $('<em>').text(rsvpTimestamp);
 																		var message = childSnapshot.val().message != '<p><br></p>' ? childSnapshot.val().message : '<p><em>(This person is no fun and didn\'t leave a message.)</em></p>';
-																		$('#rsvp-' + curEventId).append(rsvpRow.append(rsvpCol.append(rsvpName).append(rsvpPhoto).append(message)));
+																		$('#rsvp-' + curEventId).append(rsvpRow.append(rsvpCol.append(rsvpName).append('<br>').append(rsvpPhoto).append(rsvpTimestamp).append(message)));
 																	}
 																});
 															});
@@ -317,7 +318,8 @@ $(document).ready(function() {
 			var rsvp = {
 				uid: userId,
 				eventId: eventId,
-				message: message
+				message: message,
+				timestamp: moment().format('X')
 			};
 			// push rsvp to main rsvps node and user's personal rsvps sub-node
 			database.ref('/rsvps').push(rsvp, function(errors) {

@@ -10,15 +10,12 @@
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link href="https://cdn.quilljs.com/1.3.4/quill.snow.css" rel="stylesheet">
-    <link href="https://cdn.quilljs.com/1.3.4/quill.bubble.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/reset.css">
 	<link rel="stylesheet" href="assets/css/styles.css">
     <link href="https://fonts.googleapis.com/css?family=Bungee|Lobster|Permanent+Marker" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Fira+Sans+Condensed:400,600,700|Roboto:400,700,700i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans+Condensed:400,600,700|Roboto:400,400i,700,700i" rel="stylesheet">
 </head>
 <body>
-    
         <nav class="navbar navbar-inverse navbar-fixed-top"> 
             <div class="container"> 
                 <div class="navbar-header"> 
@@ -38,17 +35,11 @@
                 </div> 
             </div> 
         </nav> 
-    
     <div class="container">
-        
-    
-        <nav class="navbar navbar-inverse navbar-fixed-bottom">
-            <a href="https://songkick.com"><img src="assets/images/powered-by-songkick-white.png" class="footer-image"></a>
-        </nav>
-
+        <div class="rsvp-results">
+            <ul class="rsvp-list"></ul>  
+        </div>
     </div> 
-    <script src="https://cdn.quilljs.com/1.3.4/quill.js"></script>
-    <script src="https://cdn.quilljs.com/1.3.4/quill.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
     <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -87,18 +78,33 @@
                     });
                 }
             });
+
+            firebase.auth().onAuthStateChanged(function(user) {
+                console.log(user);
+                if (user) {
+                    console.log("YUP");
+                    //load the rsvps
+                    var eventId = $.urlParam('eventId');
+                    console.log(eventId);
+                    setColumns($('.container').width());
+                    $(window).on('resize', function() {	
+                        setColumns($('.container').width());
+                        for (var i = 0; i < $('.rsvp').length; i++) {
+                            //reposition item
+                            positionItem(i);
+                        }
+                    });
+                    viewRsvps(eventId);
+                }
+            });
+           
             var profile = googleUser.getBasicProfile();
             var email = profile.getEmail();
             var photo = profile.getImageUrl();
             // The ID token you need to pass to your backend:
             var id_token = googleUser.getAuthResponse().id_token;
             
-            if(id_token.length)
-                isLoggedIn = true;
-
-            //enable rsvps
-            $('#rsvp-container, #rsvpSubmit, #userPhoto').removeClass('hidden');
-            $('#signInToRSVP').addClass('hidden');
+            isLoggedIn = true;            
 
             if (isLoggedIn) {
                 $('.user-info').html( email + '</strong> (<a class="sign-out">Sign Out</a>)');
@@ -125,9 +131,6 @@
             var auth2 = gapi.auth2.getAuthInstance();
             auth2.signOut().then(function () {
                 firebase.auth().signOut();
-                // disable RSVPs
-                $('#rsvp-container, #rsvpSubmit, #userPhoto').addClass('hidden');
-                $('#signInToRSVP').removeClass('hidden');
                  // reset id token to empty string
                 isLoggedIn = false;
                 // hide user info and show sign-in button
@@ -136,14 +139,11 @@
             });
         }
         $(document).ready(function() {            
-            $('body').on('click', '.rsvp', function() {
-                $('#rsvpModal').modal({backdrop: 'static', keyboard: false}, $(this));
-            });
             $('body').on('click', '.sign-out', function() {
                 signOut();
             });
         });
     </script>
-    <script src="assets/javascript/app.js"></script>
+    <script src="assets/javascript/view-rsvps.js"></script>
 </body>
 </html>
