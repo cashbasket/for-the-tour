@@ -18,25 +18,32 @@
     <link href="https://fonts.googleapis.com/css?family=Fira+Sans+Condensed:400,600,700|Roboto:400,400i,700,700i" rel="stylesheet">
 </head>
 <body class="site">
-    <nav class="navbar navbar-inverse navbar-fixed-top"> 
-        <div class="container site-content">
-            <div class="navbar-header"> 
-                <button type=button class="collapsed navbar-toggle" data-toggle=collapse data-target=#bs-example-navbar-collapse-5 aria-expanded=false> 
-                <span class=sr-only>Toggle navigation</span> 
-                </button> 
-                <a href="index.html" class="navbar-brand hidden" id="homepage">For The Tour</a> 
-            </div> 
-            <ul class="nav navbar-nav hidden" id="loginRSVPs">
-                <li class="active"><a href="view-rsvps.html">My RSVP's<span class="sr-only"></span></a></li>
-            </ul>
-            <div class="collapse navbar-collapse"> 
-            <p class="navbar-text navbar-right"><a href=# class=navbar-link>
-                <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
-                <div class="user-info"></div>
-            </a></p> 
-            </div> 
-        </div> 
-    </nav>
+    <header>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="row">
+                <div class="container">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav-items" aria-expanded="false">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="navbar-button-text">Menu</span>
+                            </button>
+                            <h1 id="homepage" class="navbar-brand hidden"><a href=".">For the Tour</a></h1>
+                        </div>
+                        <div class="collapse navbar-collapse" id="nav-items">
+                            <ul class="nav navbar-nav hidden" id="loginRSVPs">
+                                <li><a href="view-rsvps.html">My RSVPs</a></li>
+                            </ul>
+                             <div class="navbar-text navbar-right">
+                                <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+                                <div class="user-info"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
     <div class="container site-content">
         <div id="homeSearch" class="home-search">
             <img src="assets/images/vanimage.png" alt="Image of a van" class="main-image img-responsive" />
@@ -131,7 +138,7 @@
                             <div id="rsvp-container" class="form-group hidden">
                                 <h4>Add an RSVP Message (optional, but fun):</h4>
                                 <div id="messageText"></div>
-                                <div class="pull-right"><strong id="charsLeft">280</strong> characters remaining</div>
+                                <div class="message-remaining pull-right"><strong id="charsLeft">280</strong> characters remaining</div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -208,6 +215,7 @@
                 $('.user-info').html( email + '</strong> (<a class="sign-out">Sign Out</a>)');
                 $('.g-signin2').hide();
                 $('.user-info').removeClass('hidden');
+                $('h1.navbar-brand').css('padding-top', '15px');
                 $('#userPhotoFigure').html('<img src="' + photo + '" class="img-responsive" />');
                 $('#loginRSVPs').removeClass('hidden');
                 $('#addToCalendarLink').removeClass('hidden');
@@ -239,14 +247,6 @@
                 clientId: CLIENT_ID,
                 discoveryDocs: DISCOVERY_DOCS,
                 scope: SCOPES
-            }).then(function () {
-                // Listen for sign-in state changes.
-                gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-
-                // Handle the initial sign-in state.
-                updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-                authorizeButton.onclick = handleAuthClick;
-                signoutButton.onclick = handleSignoutClick;
             });
         }
         
@@ -323,8 +323,10 @@
             auth2.signOut().then(function () {
                 firebase.auth().signOut();
                 // disable RSVPs
+                $('h1.navbar-brand').css('padding-top', '22px');
                 $('#rsvp-container, #rsvpSubmit, #userPhotoFigure').addClass('hidden');
                 $('#signInToRSVP').removeClass('hidden');
+                $('#loginRSVPs').addClass('hidden');
                  // reset id token to empty string
                 isLoggedIn = false;
                 // hide user info and show sign-in button
