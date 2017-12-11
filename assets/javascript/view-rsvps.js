@@ -30,15 +30,13 @@ $.urlParam = function(name, url) {
 
 function getEventInfo(eventId) {
 	if(eventId !== undefined) {
-		$.ajax('http://api.songkick.com/api/3.0/events/' + eventId + '.json?apikey=' + apiKey)
+		$.ajax('https://api.songkick.com/api/3.0/events/' + eventId + '.json?apikey=' + apiKey)
 			.done(function(response) {
 				var event = response.resultsPage.results.event;
 				var eventTitle = event.displayName;
-				var eventDateTime  = event.start.datetime ? event.start.datetime : event.start.date;
-
 				var eventHeader = $('<h2>').text('RSVPs for ' + eventTitle);
 
-				$('.event-detail-header').removeClass('hidden').append(eventHeader).append(eventTimestamp);
+				$('.event-detail-header').removeClass('hidden').append(eventHeader);
 			});
 	}
 }
@@ -63,7 +61,6 @@ function setColumns(width) {
 function buildMyItem(response, timestamp, message, index) {		
 	var event = response.resultsPage.results.event;
 	var name = event.displayName;
-	var date = event.start.dateTime ? moment(event.start.dateTime).format('M/DD/YYYY @ h:mma') : moment(event.start.date).format('M/DD/YYYY');
 	var rsvpTime = moment.unix(timestamp).format('M/DD/YYYY @ h:mma');
 
 	var rsvpItem = $('<li>').attr('id', 'rsvp-' + index).addClass('rsvp-item');
@@ -112,7 +109,7 @@ function viewRsvps(eventId) {
 			const userData = snapshot.val();
 			if(userData) {
 				snapshot.forEach(function(child) {
-					$.ajax('http://api.songkick.com/api/3.0/events/'+ child.val().eventId + '.json?apikey=' + apiKey)
+					$.ajax('https://api.songkick.com/api/3.0/events/'+ child.val().eventId + '.json?apikey=' + apiKey)
 						.done(function(response) {
 							buildMyItem(response, child.val().timestamp, child.val().message, index);
 							index++;
@@ -126,10 +123,8 @@ function viewRsvps(eventId) {
 		database.ref('/rsvps').orderByChild('eventId').equalTo(eventId.toString()).on('value', function(snapshot) {
 			if(snapshot.val()) {
 				snapshot.forEach(function(childSnapshot) {
-					var rsvpName, rsvpPhoto;
 					database.ref('/users/' + childSnapshot.val().uid).once('value', function(userSnap) {
 						if (userSnap.val()) {
-							console.log(userSnap.val().name);
 							var message = childSnapshot.val().message != '<p><br></p>' ? childSnapshot.val().message : '<p><em>(This person is no fun and didn\'t leave a message.)</em></p>';
 							buildItem(userSnap.val().name, userSnap.val().photoUrl, userSnap.val().timestamp, message, index);
 							index++;
@@ -144,4 +139,4 @@ function viewRsvps(eventId) {
 $(document).ready(function() {
 	var eventId = $.urlParam('eventId');
 	getEventInfo(eventId);
-})
+});
