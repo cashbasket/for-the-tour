@@ -170,6 +170,17 @@ function getVenueInfo(button, fn) {
 		});
 }
 
+$.urlParam = function(name, url) {
+	if (!url) {
+		url = window.location.href;
+	}
+	var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(url);
+	if (!results) { 
+		return undefined;
+	}
+	return results[1] || undefined;
+};
+
 $(document).ready(function() {
 	//initialize Quill.js
 	var editor = new Quill('#messageText', {
@@ -183,91 +194,88 @@ $(document).ready(function() {
 		placeholder: 'Type something cool...',
 		theme: 'snow'
 	});
-	
-	$('.searchForm').on('submit', function(event) {
-		var curInput = $(this).find('.search-input');
-		event.preventDefault();
-		var band = curInput.val().trim();
-		if (band.length) {
-			$('#result-header-query').text(band);
-			$('#homeSearch, .no-results, #results, #containerHead').addClass('hidden');
-			$('.searching').removeClass('hidden');
-			$('#homepage').removeClass('hidden');
-			$('.results-table-wrapper, .apiError').hide();
-			$.ajax('https://api.songkick.com/api/3.0/search/artists.json?apikey=' + apiKey + '&query=' + encodeURIComponent(band))
-				.done(function (response) {
-					$('.searching').addClass('hidden');
-					$('#events').empty();
-					if (response.resultsPage.results.artist) {
-						var touringArtistIds = [];
-						for (var i=0; i < response.resultsPage.results.artist.length; i++){
-							if (response.resultsPage.results.artist[i].onTourUntil != null) {
-								touringArtistIds.push(response.resultsPage.results.artist[i].id);
-							}
+
+	var curInput = $.urlParam('b');
+	if(curInput) {
+		var band = curInput.replace('+', ' ');
+		$('#result-header-query').text(band);
+		$('#homeSearch, .no-results, #results, #containerHead').addClass('hidden');
+		$('.searching').removeClass('hidden');
+		$('#homepage').removeClass('hidden');
+		$('.results-table-wrapper, .apiError').hide();
+		$.ajax('https://api.songkick.com/api/3.0/search/artists.json?apikey=' + apiKey + '&query=' + encodeURIComponent(band))
+			.done(function (response) {
+				$('.searching').addClass('hidden');
+				$('#events').empty();
+				if (response.resultsPage.results.artist) {
+					var touringArtistIds = [];
+					for (var i=0; i < response.resultsPage.results.artist.length; i++){
+						if (response.resultsPage.results.artist[i].onTourUntil != null) {
+							touringArtistIds.push(response.resultsPage.results.artist[i].id);
 						}
-						if (touringArtistIds.length) {
-							for (var j=0; j < touringArtistIds.length; j++) {
-								$.ajax('https://api.songkick.com/api/3.0/artists/' + touringArtistIds[j] + '/calendar.json?apikey=' + apiKey)
-									.done(function (calResponse) {
-										var events = calResponse.resultsPage.results.event;
-										if(events.length) {
-											for (var k=0; k < events.length; k++) {
-												var curEvent = events[k];
-												getArtistEvent(curEvent, function(curEvent) {
-													var curEventId = curEvent.id;
-													rsvpsRef.orderByChild('eventId').equalTo(curEventId.toString()).limitToLast(10).on('value', function(snapshot) {
-														if(snapshot.val()) {
-															$('#rsvpCol-' + curEventId).removeClass('hidden');
-															$('#no-results-' + curEventId).hide();
-															$('#rsvp-' + curEventId).empty();
-															snapshot.forEach(function(childSnapshot) {
-																var rsvpRow  = $('<div class="row rsvp-row">');
-																var rsvpCol = $('<div class="col-md-12">');
-																var rsvpName, rsvpPhoto;
-																var rsvpTimestamp = moment.unix(childSnapshot.val().timestamp).format('MM/DD/YYYY @ h:mma');
-																database.ref('/users/' + childSnapshot.val().uid).once('value', function(userSnap) {
-																	if (userSnap.val()) {
-																		rsvpName = $('<strong>').text(userSnap.val().name);
-																		rsvpPhoto = $('<img>').attr('src', userSnap.val().photoUrl).addClass('rsvp-img pull-right');
-																		rsvpTimestamp = $('<em>').text(rsvpTimestamp);
-																		var message = childSnapshot.val().message != '<p><br></p>' ? childSnapshot.val().message : '<p><em>(This person is no fun and didn\'t leave a message.)</em></p>';
-																		$('#rsvp-' + curEventId).prepend(rsvpRow.append(rsvpCol.append(rsvpPhoto).append(rsvpName).append('<br>').append(rsvpTimestamp).append(message)));
-																	}
-																});
+					}
+					if (touringArtistIds.length) {
+						for (var j=0; j < touringArtistIds.length; j++) {
+							$.ajax('https://api.songkick.com/api/3.0/artists/' + touringArtistIds[j] + '/calendar.json?apikey=' + apiKey)
+								.done(function (calResponse) {
+									var events = calResponse.resultsPage.results.event;
+									if(events.length) {
+										for (var k=0; k < events.length; k++) {
+											var curEvent = events[k];
+											getArtistEvent(curEvent, function(curEvent) {
+												var curEventId = curEvent.id;
+												rsvpsRef.orderByChild('eventId').equalTo(curEventId.toString()).limitToLast(10).on('value', function(snapshot) {
+													if(snapshot.val()) {
+														$('#rsvpCol-' + curEventId).removeClass('hidden');
+														$('#no-results-' + curEventId).hide();
+														$('#rsvp-' + curEventId).empty();
+														snapshot.forEach(function(childSnapshot) {
+															var rsvpRow  = $('<div class="row rsvp-row">');
+															var rsvpCol = $('<div class="col-md-12">');
+															var rsvpName, rsvpPhoto;
+															var rsvpTimestamp = moment.unix(childSnapshot.val().timestamp).format('MM/DD/YYYY @ h:mma');
+															database.ref('/users/' + childSnapshot.val().uid).once('value', function(userSnap) {
+																if (userSnap.val()) {
+																	rsvpName = $('<strong>').text(userSnap.val().name);
+																	rsvpPhoto = $('<img>').attr('src', userSnap.val().photoUrl).addClass('rsvp-img pull-right');
+																	rsvpTimestamp = $('<em>').text(rsvpTimestamp);
+																	var message = childSnapshot.val().message != '<p><br></p>' ? childSnapshot.val().message : '<p><em>(This person is no fun and didn\'t leave a message.)</em></p>';
+																	$('#rsvp-' + curEventId).prepend(rsvpRow.append(rsvpCol.append(rsvpPhoto).append(rsvpName).append('<br>').append(rsvpTimestamp).append(message)));
+																}
 															});
-															
-															$('#viewRsvp-' + curEventId).removeClass('hidden');
-														} else {
-															$('#rsvp-' + curEventId).append('<p id="no-results-' + curEventId + '">There are currently no RSVPs for this event.');
-														}
-													});
-												});	
-												$('#containerHead, #results').removeClass('hidden');
-											}								
-										} else {
-											$('#containerHead').removeClass('hidden');
-											$('.no-results').removeClass('hidden');
-										}
-									})
-									.fail(function() {
-										$('#results').append('<p class="apiError">An error occurred while retrieving event data from the API :(');
-									});
-							}
-						} else {
-							$('#containerHead').removeClass('hidden');
-							$('.no-results').removeClass('hidden');
+														});
+																
+														$('#viewRsvp-' + curEventId).removeClass('hidden');
+													} else {
+														$('#rsvp-' + curEventId).append('<p id="no-results-' + curEventId + '">There are currently no RSVPs for this event.');
+													}
+												});
+											});	
+											$('#containerHead, #results').removeClass('hidden');
+										}								
+									} else {
+										$('#containerHead').removeClass('hidden');
+										$('.no-results').removeClass('hidden');
+									}
+								})
+								.fail(function() {
+									$('#results').append('<p class="apiError">An error occurred while retrieving event data from the API :(');
+								});
 						}
 					} else {
 						$('#containerHead').removeClass('hidden');
 						$('.no-results').removeClass('hidden');
 					}
-				})
-				.fail(function () {
-					$('#results').append('<p class="apiError">An error occurred while retrieving artist data from the API :(');
-				});
-		} 
-		$('#bandName, #subBandName').val('');
-	});
+				} else {
+					$('#containerHead').removeClass('hidden');
+					$('.no-results').removeClass('hidden');
+				}
+			})
+			.fail(function () {
+				$('#results').append('<p class="apiError">An error occurred while retrieving artist data from the API :(');
+			});
+	} 
+	$('#bandName, #subBandName').val('');
 
 	$('body').on('click', '.rsvp', function() {
 		$('#rsvpForm').addClass('hidden');
