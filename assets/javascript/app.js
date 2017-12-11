@@ -92,6 +92,11 @@ function getArtistEvent(curEvent, fn) {
 		.text('View RSVPs');
 	$('#events').append(eventDiv.append(eventDivHeader.append(eventDivTitle)).append(eventDivBody.append(eventDivRow.append(detailsCol.append(detailsDiv.append(rsvpButton).append(viewRsvpsButton))).append(rsvpsCol.append(rsvpsDiv.append(rsvpsHeader))))));
 
+	var rsvpHeaderRow = $('<div class="row">');
+	var rsvpHeaderCol = $('<div class="col-md-12 rsvp-header">');
+	var rsvpHeader = $('<h3>').text('Recent RSVPs');
+	$('#rsvpCol-' + curEvent.id).prepend(rsvpHeaderRow.append(rsvpHeaderCol.append(rsvpHeader)));
+
 	fn(curEvent);
 }
 
@@ -214,7 +219,7 @@ $(document).ready(function() {
 														if(snapshot.val()) {
 															$('#rsvpCol-' + curEventId).removeClass('hidden');
 															$('#no-results-' + curEventId).hide();
-															$('#rsvp-' + curEventId).empty().append('<h3>Recent RSVPs</h3>');
+															$('#rsvp-' + curEventId).empty();
 															snapshot.forEach(function(childSnapshot) {
 																var rsvpRow  = $('<div class="row rsvp-row">');
 																var rsvpCol = $('<div class="col-md-12">');
@@ -226,10 +231,11 @@ $(document).ready(function() {
 																		rsvpPhoto = $('<img>').attr('src', userSnap.val().photoUrl).addClass('rsvp-img pull-right');
 																		rsvpTimestamp = $('<em>').text(rsvpTimestamp);
 																		var message = childSnapshot.val().message != '<p><br></p>' ? childSnapshot.val().message : '<p><em>(This person is no fun and didn\'t leave a message.)</em></p>';
-																		$('#rsvp-' + curEventId).append(rsvpRow.append(rsvpCol.append(rsvpName).append('<br>').append(rsvpPhoto).append(rsvpTimestamp).append(message)));
+																		$('#rsvp-' + curEventId).prepend(rsvpRow.append(rsvpCol.append(rsvpPhoto).append(rsvpName).append('<br>').append(rsvpTimestamp).append(message)));
 																	}
 																});
 															});
+															
 															$('#viewRsvp-' + curEventId).removeClass('hidden');
 														} else {
 															$('#rsvp-' + curEventId).append('<p id="no-results-' + curEventId + '">There are currently no RSVPs for this event.');

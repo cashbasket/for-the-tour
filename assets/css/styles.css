@@ -339,7 +339,7 @@ div.event-rsvps > .rsvp-row:first-of-type:before {
     border-top: none;
 }
 
-div.event-rsvps > h3 {
+div.rsvp-header > h3 {
     background-color: #4c687c;
     color: #ffffff;
     margin-bottom: 0;
