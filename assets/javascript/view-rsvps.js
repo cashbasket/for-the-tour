@@ -28,6 +28,20 @@ $.urlParam = function(name, url) {
 	return results[1] || undefined;
 };
 
+function getEventInfo(eventId) {
+	if(eventId !== undefined) {
+		$.ajax('http://api.songkick.com/api/3.0/events/' + eventId + '.json?apikey=' + apiKey)
+			.done(function(response) {
+				var event = response.resultsPage.results.event;
+				var eventTitle = event.displayName;
+				var eventDateTime  = event.start.datetime ? event.start.datetime : event.start.date;
+
+				var eventHeader = $('<h2>').text('RSVPs for ' + eventTitle);
+
+				$('.event-detail-header').removeClass('hidden').append(eventHeader).append(eventTimestamp);
+			});
+	}
+}
 function setColumns(width) {	
 	if (width >= 1040)
 		numCols = 4;
@@ -68,7 +82,7 @@ function buildItem(name, photo, timestamp, message, index) {
 	var userName = $('<h3>').text(name);
 	var userPhoto = $('<img />').attr('src', photo).addClass('rsvp-img pull-right');
 	var rsvpTimestamp = $('<em>').text('RSVPed on ' + rsvpTime);
-	$('.rsvp-list').append(rsvpItem.append(userPhoto).append(userName).append(rsvpTimestamp).append(message));
+	$('.rsvp-list').append(rsvpItem.append(userPhoto).append(userName).append(message).append(rsvpTimestamp));
 
 	positionItem(index);
 }
@@ -126,3 +140,8 @@ function viewRsvps(eventId) {
 		});
 	}
 }
+
+$(document).ready(function() {
+	var eventId = $.urlParam('eventId');
+	getEventInfo(eventId);
+})
