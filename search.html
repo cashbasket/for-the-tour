@@ -59,7 +59,7 @@
                 <div id="subSearch" class="sub-search">
                     <form class="searchForm form-inline">
                         <div class="form-group">
-                            <input type="text" name="b" id="subBandName" placeholder="Enter a band name..." class="form-control search-input sub-search-input" />
+                            <input type="text" name="b" id="subBandName" placeholder="Enter a band name..." class="form-control search-input sub-search-input" required pattern="^(.*?)([A-Za-z0-9!-+]+)$" />
                         </div>
                         <button type="submit" class="btn-sub">Search Again</button>
                     </form>
@@ -157,9 +157,6 @@
             messagingSenderId: '725149234874'
         };
         firebase.initializeApp(firebaseConfig);
-
-        var authorizeButton = document.getElementById('authorize-button');
-      var signoutButton = document.getElementById('signout-button');
 
         var isLoggedIn = false;    
         function onSignIn(googleUser) {

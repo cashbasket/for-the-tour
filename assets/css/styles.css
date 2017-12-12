@@ -38,7 +38,7 @@ h1.navbar-brand > a:hover {
     display: flex;
     justify-content: center;
     flex-direction:column;
-    min-height: 85vh;
+    min-height: 79vh;
 }
 
 strong {
@@ -285,8 +285,8 @@ div.performers {
 
 .event-rsvps {
     background-color: #a1b8c7;
-    min-height: 212px;
-    max-height: 212px;
+    min-height: 216px;
+    max-height: 216px;
     overflow-y: auto;
     overflow-x: hidden;
     padding: 0;
