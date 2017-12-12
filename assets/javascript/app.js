@@ -356,32 +356,38 @@ $(document).ready(function() {
 		var eventId = $('#eventId').val();
 		var message = $('.ql-editor').html().replace('ql-indent-1', 'indent-1').replace('ql-indent-2', 'indent-2');
 
-		checkForRsvp(eventId, message, function(eventId, message) {
-			var rsvp = {
-				uid: userId,
-				eventId: eventId,
-				message: message,
-				timestamp: moment().format('X')
-			};
-			// push rsvp to main rsvps node and user's personal rsvps sub-node
-			database.ref('/rsvps').push(rsvp, function(errors) {
-				database.ref('/users/' + userId + '/user-rsvps').push(rsvp, function() {
-					if (!errors) {
-						database.ref('/events').orderByChild('eventId').equalTo(eventId).once('value', function(snapshot) {
-							if(!snapshot.val()) {
-								var event = {
-									eventId: eventId,
-									eventTitle: $('#rsvpTitle').text(),
-									eventStart: moment($('#datetime').val()).format('X')
-								};
-								database.ref('/events').push(event);
-								$('#viewRsvp-' + eventId).removeClass('hidden');
-							}
-						});
-						onRsvp();
-					}
-				});		
+		if(message === '<p><br></p>') {
+			// Let user know a message is required.
+			$('.rsvp-warning').removeClass('hidden');
+		} else {
+			$('.rsvp-warning').addClass('hidden');
+			checkForRsvp(eventId, message, function(eventId, message) {
+				var rsvp = {
+					uid: userId,
+					eventId: eventId,
+					message: message,
+					timestamp: moment().format('X')
+				};
+				// push rsvp to main rsvps node and user's personal rsvps sub-node
+				database.ref('/rsvps').push(rsvp, function(errors) {
+					database.ref('/users/' + userId + '/user-rsvps').push(rsvp, function() {
+						if (!errors) {
+							database.ref('/events').orderByChild('eventId').equalTo(eventId).once('value', function(snapshot) {
+								if(!snapshot.val()) {
+									var event = {
+										eventId: eventId,
+										eventTitle: $('#rsvpTitle').text(),
+										eventStart: moment($('#datetime').val()).format('X')
+									};
+									database.ref('/events').push(event);
+									$('#viewRsvp-' + eventId).removeClass('hidden');
+								}
+							});
+							onRsvp();
+						}
+					});		
+				});
 			});
-		});
+		}
 	});
 });
