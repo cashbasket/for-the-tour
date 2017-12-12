@@ -2,7 +2,6 @@ var currentUser, userId;
 var columnLefts = [];
 var lastInColHeight, lastInColTop, left, colWidth, numCols;
 const gutterWidth = 15;
-var index = 0;
 
 firebase.auth().onAuthStateChanged(function(user) {
 	if (user) {
@@ -109,8 +108,7 @@ function viewRsvps(eventId) {
 					database.ref('/events').orderByChild('eventId').equalTo(child.val().eventId.toString()).once('value', function(eventSnap) {
 						if (eventSnap.val()) {
 							eventSnap.forEach(function(eventChild) {
-								buildMyItem(eventChild.val().eventTitle, child.val().timestamp, child.val().message, index);
-								index++;
+								buildMyItem(eventChild.val().eventTitle, child.val().timestamp, child.val().message, $('.rsvp-item').length);
 							});
 						}
 					});                    
@@ -119,16 +117,13 @@ function viewRsvps(eventId) {
 		});
 	} else {
 		// EVENT RSVPS
-		database.ref('/rsvps').orderByChild('eventId').equalTo(eventId.toString()).on('value', function(snapshot) {
+		database.ref('/rsvps').orderByChild('eventId').equalTo(eventId.toString()).on('child_added', function(snapshot) {
 			if(snapshot.val()) {
-				snapshot.forEach(function(child) {
-					database.ref('/users/' + child.val().uid).once('value', function(userSnap) {
-						if (userSnap.val()) {
-							var message = child.val().message != '<p><br></p>' ? child.val().message : '<p><em>(This person is no fun and didn\'t leave a message.)</em></p>';
-							buildItem(userSnap.val().name, userSnap.val().photoUrl, child.val().timestamp, message, index);
-							index++;
-						}
-					});
+				database.ref('/users/' + snapshot.val().uid).once('value', function(userSnap) {
+					if (userSnap.val()) {
+						var message = snapshot.val().message != '<p><br></p>' ? snapshot.val().message : '<p><em>(This person is no fun and didn\'t leave a message.)</em></p>';
+						buildItem(userSnap.val().name, userSnap.val().photoUrl, snapshot.val().timestamp, message, $('.rsvp-item').length);
+					}
 				});
 			}
 		});
