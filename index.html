@@ -53,100 +53,11 @@
                 <div class="col-md-6 col-md-push-3">
                     <form class ="searchForm" action="search.html">
                         <div class="form-group">
-                            <input type="text" name="b" id="bandName" placeholder="Enter a band name..." class="form-control search-input" />
+                            <input type="text" name="b" id="bandName" placeholder="Enter a band name..." class="form-control search-input" required pattern="^(.*?)([A-Za-z0-9!-+&@']+)$"/>
                         </div>
                         <button type="submit" class="btn-home">Search</button>
                     </form>
               </div>
-            </div>
-        </div>
-        
-        <div class="searching hidden">
-            <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><br>
-            Searching
-        </div>
-        <div id="containerHead" class="row hidden">
-            <div class="col-sm-6">
-                <div id="resultsHead">
-                    <h2>Results for "<span id="result-header-query"></span>"</h2>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div id="subSearch" class="sub-search">
-                    <form class="searchForm form-inline">
-                        <div class="form-group">
-                            <input type="text" id="subBandName" placeholder="Enter a band name..." class="form-control search-input sub-search-input" />
-                        </div>
-                        <button type="submit" class="btn-sub">Search Again</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="no-results hidden">Sorry, your search returned no results.</div>
-        
-        <div id="results" class="hidden">
-            
-            <div id="events"></div>
-        </div>
-        
-        <div class="modal fade" id="rsvpModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div id="venueLoading">
-                        <i class="fas fa-spinner fa-spin fa-3x"></i>
-                    </div>
-                    <form id="rsvpForm">
-                        <div class="modal-body">
-                            <input type="hidden" id="eventId" />
-                            <input type="hidden" ide="eventUri" />
-                            <input type="hidden" id="datetime" />
-                            <figure id="userPhotoFigure" class="pull-right clearfix hidden user-photo"></figure>
-                            <h2 id="rsvpTitle"></h2>
-                            <div id="showDetails">
-                                <h4>Date/Time:</h4>
-                                <p id="rsvpShowDate"></p>
-                                <h4>Performer(s):</h4>
-                                <p id="rsvpLineup"></p>
-                                
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <h4>Venue Information:</h4>
-                                        <div id="rsvpShowVenue"></div>
-                                        <div id="rsvpStreet"></div>
-                                        <div><span id="rsvpCity"></span><span id="rsvpState"></span> <span id="rsvpZip"></span></div>
-                                        <div id="rsvpCountry"></div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div id="venue-website"></div>
-                                        <div id="addToCalendarLink" class="hidden">
-                                        </div>
-                                        <div id="eventAdded" class="hidden">
-                                            <strong class="blue">Event added!</strong>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="signInToRSVP">
-                                <h2 class="blue">You must sign in to RSVP.</h2>
-                            </div>
-                            <div id="alreadyRSVPed" class="hidden">
-                                <h2 class="blue">You have already RSVPed for this event.</h2>
-                            </div>
-                            <div id="onRSVP" class="hidden">
-                                <h2 class="blue">Thank you!  Your RSVP was submitted successfully</h2>
-                            </div>
-                            <div id="rsvp-container" class="form-group hidden">
-                                <h4>Add an RSVP Message (optional, but fun):</h4>
-                                <div id="messageText"></div>
-                                <div class="message-remaining pull-right"><strong id="charsLeft">280</strong> characters remaining</div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" id="cancelRsvp" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <button id="rsvpSubmit" type="submit" class="btn btn-primary hidden">Submit RSVP</button>
-                        </div>
-                    </form>
-                </div>
             </div>
         </div>
     </div>
@@ -203,19 +114,12 @@
             // The ID token you need to pass to your backend:
             var id_token = googleUser.getAuthResponse().id_token;
             isLoggedIn = true;
-            
-            //enable rsvps
-            $('#rsvp-container, #rsvpSubmit, #userPhotoFigure').removeClass('hidden');
-            $('#signInToRSVP').addClass('hidden');
 
             if (isLoggedIn) {
                 $('.user-info').html( email + '</strong> (<a class="sign-out">Sign Out</a>)');
                 $('.g-signin2').hide();
                 $('.user-info').removeClass('hidden');
-                $('h1.navbar-brand').css('padding-top', '15px');
-                $('#userPhotoFigure').html('<img src="' + photo + '" class="img-responsive" />');
                 $('#loginRSVPs').removeClass('hidden');
-                $('#addToCalendarLink').removeClass('hidden');
             }
         }
         function isUserEqual(googleUser, firebaseUser) {
@@ -250,10 +154,7 @@
             auth2.signOut().then(function () {
                 firebase.auth().signOut();
                 // disable RSVPs
-                $('h1.navbar-brand').css('padding-top', '22px');
-                $('#signInToRSVP').removeClass('hidden');
                 $('#loginRSVPs').addClass('hidden');
-                 // reset id token to empty string
                 isLoggedIn = false;
                 // hide user info and show sign-in button
                 $('.g-signin2').show();
