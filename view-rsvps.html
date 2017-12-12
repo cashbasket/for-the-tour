@@ -54,6 +54,7 @@
     <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="assets/javascript/jquery.nicescroll.min.js"></script>
     <script>
         var firebaseConfig = {
             apiKey: 'AIzaSyDs9iz9p-7I_mGuLqHUlhnz-sSQyqwgE_c',
@@ -93,9 +94,9 @@
                 if (user) {
                     //load the rsvps
                     var eventId = $.urlParam('eventId');
-                    setColumns($('.container').width());
+                    setColumns($('.rsvp-results').width());
                     $(window).on('resize', function() {	
-                        setColumns($('.container').width());
+                        setColumns($('.rsvp-results').width());
                         for (var i = 0; i < $('.rsvp-item').length; i++) {
                             //reposition item
                             positionItem(i);

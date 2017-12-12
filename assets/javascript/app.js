@@ -191,6 +191,14 @@ String.prototype.replaceAll = function(search, replacement) {
 };
 
 $(document).ready(function() {
+	$('body').niceScroll({
+		cursorwidth:12,
+		cursorcolor:'#000000',
+		cursorborder:'1px solid #fff',
+		horizrailenabled:false,
+		autohidemode:false
+	});
+
 	//initialize Quill.js
 	if($('#messageText').length) {
 		var editor = new Quill('#messageText', {
@@ -247,17 +255,12 @@ $(document).ready(function() {
 										for (var k=0; k < events.length; k++) {
 											var curEvent = events[k];
 											getArtistEvent(curEvent, function(curEvent) {
-												//initialize nicescroll
-												if($('.event-rsvps').length)
-													$('.event-rsvps').niceScroll({
-														cursorwidth:12,
-														cursorcolor:'#41494e',
-														cursorborder:'1px solid #fff',
-														horizrailenabled:false
-													});
 												var curEventId = curEvent.id;
+												//resize main body nicescroll
+												$('body').getNiceScroll().resize();
 												rsvpsRef.orderByChild('eventId').equalTo(curEventId.toString()).limitToLast(10).on('value', function(snapshot) {
 													if(snapshot.val()) {
+														$('#rsvp-' + curEventId).getNiceScroll().resize();
 														$('#rsvpCol-' + curEventId).removeClass('hidden');
 														$('#no-results-' + curEventId).hide();
 														$('#rsvp-' + curEventId).empty();
@@ -273,10 +276,18 @@ $(document).ready(function() {
 																	rsvpTimestamp = $('<em>').text(rsvpTimestamp);
 																	var message = childSnapshot.val().message != '<p><br></p>' ? childSnapshot.val().message : '<p><em>(This person is no fun and didn\'t leave a message.)</em></p>';
 																	$('#rsvp-' + curEventId).prepend(rsvpRow.append(rsvpCol.append(rsvpPhoto).append(rsvpName).append('<br>').append(rsvpTimestamp).append(message)));
+																	//initialize nicescroll on rsvp div
+																	$('#rsvp-' + curEventId).niceScroll({
+																		cursorwidth:8,
+																		cursorcolor:'#4c687c',
+																		cursorborder:'none',
+																		horizrailenabled:false,
+																		autohidemode:'leave'
+																	});
+																	$('#rsvp-' + curEventId).getNiceScroll().resize();
 																}
 															});
-														});
-																
+														});		
 														$('#viewRsvp-' + curEventId).removeClass('hidden');
 													} else {
 														$('#rsvp-' + curEventId).append('<p id="no-results-' + curEventId + '">There are currently no RSVPs for this event.');
@@ -373,7 +384,6 @@ $(document).ready(function() {
 					}
 				});		
 			});
-			//push basic event info to firebase so we have it stored and can use it on the RSVPs page
 		});
 	});
 });

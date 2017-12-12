@@ -47,6 +47,7 @@ function setColumns(width) {
 		numCols = 2;
 	else
 		numCols = 1;
+	
 	colWidth = ((width - (gutterWidth * (numCols - 1))) / numCols);
 	columnLefts = [];
 	for(var i = 0; i < numCols; i++) {
@@ -131,6 +132,13 @@ function viewRsvps(eventId) {
 }
 
 $(document).ready(function() {
+	$('body').niceScroll({
+		cursorwidth:12,
+		cursorcolor:'#000000',
+		cursorborder:'1px solid #fff',
+		horizrailenabled:false,
+		autohidemode:false
+	});
 	var eventId = $.urlParam('eventId');
 	getEventInfo(eventId);
 });
