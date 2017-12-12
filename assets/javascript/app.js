@@ -181,23 +181,47 @@ $.urlParam = function(name, url) {
 	return results[1] || undefined;
 };
 
+function escapeRegExp(str) {
+	return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
+}
+
+String.prototype.replaceAll = function(search, replacement) {
+	var target = this;
+	return target.replace(new RegExp(escapeRegExp(search), 'g'), replacement);
+};
+
 $(document).ready(function() {
 	//initialize Quill.js
-	var editor = new Quill('#messageText', {
-		modules: {
-			toolbar: [
-				['bold', 'italic'],
-				['link', 'blockquote'],
-				[{ list: 'ordered' }, { list: 'bullet' }]
-			]
-		},
-		placeholder: 'Type something cool...',
-		theme: 'snow'
-	});
+	if($('#messageText').length) {
+		var editor = new Quill('#messageText', {
+			modules: {
+				toolbar: [
+					['bold', 'italic'],
+					['link', 'blockquote'],
+					[{ list: 'ordered' }, { list: 'bullet' }]
+				]
+			},
+			placeholder: 'Type something cool...',
+			theme: 'snow'
+		});
+
+		const maxRsvpChars = 280;
+		editor.on('text-change', function () {
+			if (editor.getLength() > maxRsvpChars) {
+				editor.deleteText(maxRsvpChars, editor.getLength());
+			}
+			$('#charsLeft').text(maxRsvpChars - editor.getLength() + 1);
+			if(editor.getLength() > 200) {
+				$('#charsLeft').addClass('red');
+			} else {
+				$('#charsLeft').removeClass('red');
+			}
+		});
+	}
 
 	var curInput = $.urlParam('b');
 	if(curInput) {
-		var band = curInput.replace('+', ' ');
+		var band = decodeURIComponent(curInput.replaceAll('+', ' '));
 		$('#result-header-query').text(band);
 		$('#homeSearch, .no-results, #results, #containerHead').addClass('hidden');
 		$('.searching').removeClass('hidden');
@@ -308,19 +332,6 @@ $(document).ready(function() {
 	$('#cancelRsvp').on('click', function () {
 		$('.ql-editor').html('<p></p>');
 		$('.ql-editor').addClass('ql-blank');
-	});
-
-	const maxRsvpChars = 280;
-	editor.on('text-change', function () {
-		if (editor.getLength() > maxRsvpChars) {
-			editor.deleteText(maxRsvpChars, editor.getLength());
-		}
-		$('#charsLeft').text(maxRsvpChars - editor.getLength() + 1);
-		if(editor.getLength() > 200) {
-			$('#charsLeft').addClass('red');
-		} else {
-			$('#charsLeft').removeClass('red');
-		}
 	});
 
 	$('#rsvpForm').on('submit', function (event) {
