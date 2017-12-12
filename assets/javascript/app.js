@@ -101,72 +101,82 @@ function getArtistEvent(curEvent, fn) {
 
 function getVenueInfo(button, fn) {
 	var venueId = button.data('venue-id');
-	$.ajax('https://api.songkick.com/api/3.0/venues/' + venueId + '.json?apikey=' + apiKey)
-		.done(function (response) {
-			var venue = response.resultsPage.results.venue;
-			var venueName = venue.displayName;
-			var venueWebsite = venue.website;
-			var id = button.data('id');
-			var uri = button.data('uri');
-			var title = button.data('event-title');
-			var lineup = button.data('lineup');
-			var showDate = button.data('date');
-			var state = button.data('state');
-			var venueId = button.data('venue-id');
-			var street, zip, city, country;
-			if (venueId) {
-				street = venue.street;
-				zip = venue.zip;
-				city = venue.city.displayName;
-				country = venue.city.country.displayName;
-				$('#rsvpStreet').text(street);
-				$('#rsvpZip').text(zip);
-				if (venueName !== 'Unknown venue') {
-					$('#rsvpShowVenue').show();
+	var id = button.data('id');
+	var uri = button.data('uri');
+	var title = button.data('event-title');
+	var lineup = button.data('lineup');
+	var showDate = button.data('date');
+	var state = button.data('state');
+	$('#eventId').val(id);
+	$('#eventUri').val(uri);
+	$('#rsvpTitle').text(title);
+	$('#datetime').val(showDate);
+
+	$('#rsvpLineup').text(lineup);
+	if(moment(showDate).format('h:mma') == '12:00am') {
+		$('#rsvpShowDate').text(moment(showDate).format('M/D/YYYY') + ' (Time Not Specified)');
+	} else {
+		$('#rsvpShowDate').text(moment(showDate).format('M/D/YYYY @ h:mma'));
+	}
+	if(venueId) {
+		$.ajax('https://api.songkick.com/api/3.0/venues/' + venueId + '.json?apikey=' + apiKey)
+			.done(function (response) {
+				var venue = response.resultsPage.results.venue;
+				var venueName = venue.displayName;
+				var venueWebsite = venue.website;
+				var street, zip, city, country;
+				if (venueId) {
+					street = venue.street;
+					zip = venue.zip;
+					city = venue.city.displayName;
+					country = venue.city.country.displayName;
+					$('#rsvpStreet').text(street);
+					$('#rsvpZip').text(zip);
+					if (venueName !== 'Unknown venue') {
+						$('#rsvpShowVenue').show();
+					} else {
+						venueName = '';
+						$('#rsvpShowVenue').hide();
+					}
+					$('#rsvpShowVenue').text(venueName);
+					$('#rsvpCity').text(city);
+					if(state.length) {
+						$('#rsvpState').text(', ' + state);
+					} else {
+						$('#rsvpState').empty();
+					}
+					$('#rsvpCountry').text(country);
 				} else {
-					venueName = '';
-					$('#rsvpShowVenue').hide();
-				}
-				$('#rsvpShowVenue').text(venueName);
-				$('#rsvpCity').text(city);
-				if(state.length) {
-					$('#rsvpState').text(', ' + state);
-				} else {
+					$('#rsvpShowVenue').text('N/A');
+					$('#rsvpStreet').empty();
+					$('#rsvpZip').empty();
+					$('#rsvpCity').empty();
 					$('#rsvpState').empty();
+					$('#rsvpCountry').empty();
+				}		
+
+				if(venueWebsite) {
+					$('#venue-website').html('<i class="far fa-bookmark"></i> <a href="' + venueWebsite + '" target="_blank">Venue website</a>');
+				} else {
+					$('#venue-website').empty();
 				}
-				$('#rsvpCountry').text(country);
-			} else {
-				$('#rsvpShowVenue').text('N/A');
-				$('#rsvpStreet').empty();
-				$('#rsvpZip').empty();
-				$('#rsvpCity').empty();
-				$('#rsvpState').empty();
-				$('#rsvpCountry').empty();
-			}		
 
-			if(venueWebsite) {
-				$('#venue-website').html('<i class="far fa-bookmark"></i> <a href="' + venueWebsite + '" target="_blank">Venue website</a>');
-			} else {
-				$('#venue-website').empty();
-			}
-	
-			$('#eventId').val(id);
-			$('#eventUri').val(uri);
-			$('#rsvpTitle').text(title);
-			$('#datetime').val(showDate);
+				fn();
+			})
+			.fail(function() {
+				$('#results').append('<p class="apiError">An error occurred while retrieving event data from the API :(');
+			});
+	} else {
+		$('#rsvpShowVenue').text('N/A');
+		$('#rsvpStreet').empty();
+		$('#rsvpZip').empty();
+		$('#rsvpCity').empty();
+		$('#rsvpState').empty();
+		$('#rsvpCountry').empty();
+		$('#venue-website').empty();
 
-			$('#rsvpLineup').text(lineup);
-			if(moment(showDate).format('h:mma') == '12:00am') {
-				$('#rsvpShowDate').text(moment(showDate).format('M/D/YYYY') + ' (Time Not Specified)');
-			} else {
-				$('#rsvpShowDate').text(moment(showDate).format('M/D/YYYY @ h:mma'));
-			}
-
-			fn();
-		})
-		.fail(function() {
-			$('#results').append('<p class="apiError">An error occurred while retrieving event data from the API :(');
-		});
+		fn();
+	}
 }
 
 $.urlParam = function(name, url) {
@@ -319,12 +329,11 @@ $(document).ready(function() {
 	$('#bandName, #subBandName').val('');
 
 	$('body').on('click', '.rsvp', function() {
-		$('#rsvpForm').addClass('hidden');
-		$('#venueLoading').removeClass('hidden');
-		$('#addToCalendarLink').removeClass('hidden');
+		$('.rsvp-warning, #rsvpForm').addClass('hidden');
+		$('#venueLoading, #addToCalendarLink').removeClass('hidden');
 		$('#alreadyRSVPed, #onRSVP, #eventAdded').addClass('hidden');
 		var button = $(this);
-
+		
 		getVenueInfo(button, function() {
 			$('#venueLoading').addClass('hidden');
 			$('#rsvpForm').removeClass('hidden');
