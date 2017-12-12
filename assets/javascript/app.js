@@ -72,7 +72,6 @@ function getArtistEvent(curEvent, fn) {
 	var rsvpsCol = $('<div class="col-md-5 hidden rsvp-column">').attr('id', 'rsvpCol-' + curEvent.id);
 	var detailsDiv = $('<div class="event-details">');
 	var rsvpsDiv = $('<div id="rsvp-' + curEvent.id + '" class="event-rsvps">');
-	var rsvpsHeader = $('<h3>').text('Recent RSVPs');
 	detailsDiv.html('<h4>Date &amp; Time</h4><p>' + dateFormat + '</p><h4>Venue</h4><p>' + venue + '</p><h4>Location</h4><p>' + location + '</p>');
 
 	var rsvpButton = $('<button>');
@@ -90,7 +89,7 @@ function getArtistEvent(curEvent, fn) {
 
 	var viewRsvpsButton = $('<button id="viewRsvp-' + curEvent.id +'" class="btn-rsvp hidden">').attr('onClick', 'location.href=\'view-rsvps.html?eventId=' + curEvent.id + '\'')
 		.text('View RSVPs');
-	$('#events').append(eventDiv.append(eventDivHeader.append(eventDivTitle)).append(eventDivBody.append(eventDivRow.append(detailsCol.append(detailsDiv.append(rsvpButton).append(viewRsvpsButton))).append(rsvpsCol.append(rsvpsDiv.append(rsvpsHeader))))));
+	$('#events').append(eventDiv.append(eventDivHeader.append(eventDivTitle)).append(eventDivBody.append(eventDivRow.append(detailsCol.append(detailsDiv.append(rsvpButton).append(viewRsvpsButton))).append(rsvpsCol.append(rsvpsDiv)))));
 
 	var rsvpHeaderRow = $('<div class="row">');
 	var rsvpHeaderCol = $('<div class="col-md-12 rsvp-header">');
@@ -258,39 +257,38 @@ $(document).ready(function() {
 												var curEventId = curEvent.id;
 												//resize main body nicescroll
 												$('body').getNiceScroll().resize();
-												rsvpsRef.orderByChild('eventId').equalTo(curEventId.toString()).limitToLast(10).on('value', function(snapshot) {
+												rsvpsRef.orderByChild('eventId').equalTo(curEventId.toString()).limitToLast(10).on('child_added', function(snapshot, previousChildKey) {
 													if(snapshot.val()) {
-														$('#rsvp-' + curEventId).getNiceScroll().resize();
 														$('#rsvpCol-' + curEventId).removeClass('hidden');
-														$('#no-results-' + curEventId).hide();
-														$('#rsvp-' + curEventId).empty();
-														snapshot.forEach(function(childSnapshot) {
-															var rsvpRow  = $('<div class="row rsvp-row">');
-															var rsvpCol = $('<div class="col-md-12">');
-															var rsvpName, rsvpPhoto;
-															var rsvpTimestamp = moment.unix(childSnapshot.val().timestamp).format('MM/DD/YYYY @ h:mma');
-															database.ref('/users/' + childSnapshot.val().uid).once('value', function(userSnap) {
-																if (userSnap.val()) {
-																	rsvpName = $('<strong>').text(userSnap.val().name);
-																	rsvpPhoto = $('<img>').attr('src', userSnap.val().photoUrl).addClass('rsvp-img pull-right');
-																	rsvpTimestamp = $('<em>').text(rsvpTimestamp);
-																	var message = childSnapshot.val().message != '<p><br></p>' ? childSnapshot.val().message : '<p><em>(This person is no fun and didn\'t leave a message.)</em></p>';
-																	$('#rsvp-' + curEventId).prepend(rsvpRow.append(rsvpCol.append(rsvpPhoto).append(rsvpName).append('<br>').append(rsvpTimestamp).append(message)));
-																	//initialize nicescroll on rsvp div
-																	$('#rsvp-' + curEventId).niceScroll({
-																		cursorwidth:8,
-																		cursorcolor:'#4c687c',
-																		cursorborder:'none',
-																		horizrailenabled:false,
-																		autohidemode:'leave'
-																	});
-																	$('#rsvp-' + curEventId).getNiceScroll().resize();
-																}
-															});
-														});		
+														var rsvpRow  = $('<div class="row rsvp-row ' + snapshot.key +'">');
+														var rsvpCol = $('<div class="col-md-12">');
+														var rsvpName, rsvpPhoto, message;
+														var rsvpTimestamp = moment.unix(snapshot.val().timestamp).format('MM/DD/YYYY @ h:mma');
+														var emptyRsvp = rsvpRow.append(rsvpCol);
+														if(previousChildKey) {
+															emptyRsvp.insertBefore('#rsvp-' + curEventId + ' > .' + previousChildKey);
+														} else {
+															$('#rsvp-' + curEventId).prepend(emptyRsvp);
+														}
+														database.ref('/users/' + snapshot.val().uid).once('value', function(userSnap) {
+															if (userSnap.val()) {
+																rsvpName = $('<strong>').text(userSnap.val().name);
+																rsvpPhoto = $('<img>').attr('src', userSnap.val().photoUrl).addClass('rsvp-img pull-right');
+																rsvpTimestamp = $('<em>').text(rsvpTimestamp);
+																message = snapshot.val().message != '<p><br></p>' ? snapshot.val().message : '<p><em>(This person is no fun and didn\'t leave a message.)</em></p>';
+																$('.' + snapshot.key + ' .col-md-12').append(rsvpPhoto).append(rsvpName).append('<br>').append(rsvpTimestamp).append(message);
+																//initialize nicescroll on rsvp div
+																$('#rsvp-' + curEventId).niceScroll({
+																	cursorwidth:8,
+																	cursorcolor:'#4c687c',
+																	cursorborder:'none',
+																	horizrailenabled:false,
+																	autohidemode:'leave'
+																});
+																$('#rsvp-' + curEventId).getNiceScroll().resize();
+															}
+														});
 														$('#viewRsvp-' + curEventId).removeClass('hidden');
-													} else {
-														$('#rsvp-' + curEventId).append('<p id="no-results-' + curEventId + '">There are currently no RSVPs for this event.');
 													}
 												});
 											});	
