@@ -182,7 +182,7 @@ $.urlParam = function(name, url) {
 };
 
 function escapeRegExp(str) {
-	return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
+	return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
 
 String.prototype.replaceAll = function(search, replacement) {
@@ -247,6 +247,14 @@ $(document).ready(function() {
 										for (var k=0; k < events.length; k++) {
 											var curEvent = events[k];
 											getArtistEvent(curEvent, function(curEvent) {
+												//initialize nicescroll
+												if($('.event-rsvps').length)
+													$('.event-rsvps').niceScroll({
+														cursorwidth:12,
+														cursorcolor:'#41494e',
+														cursorborder:'1px solid #fff',
+														horizrailenabled:false
+													});
 												var curEventId = curEvent.id;
 												rsvpsRef.orderByChild('eventId').equalTo(curEventId.toString()).limitToLast(10).on('value', function(snapshot) {
 													if(snapshot.val()) {
