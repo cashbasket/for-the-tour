@@ -221,7 +221,7 @@ $(document).ready(function() {
 
 	var curInput = $.urlParam('b');
 	if(curInput) {
-		var band = curInput.replaceAll('+', ' ');
+		var band = decodeURIComponent(curInput.replaceAll('+', ' '));
 		$('#result-header-query').text(band);
 		$('#homeSearch, .no-results, #results, #containerHead').addClass('hidden');
 		$('.searching').removeClass('hidden');
