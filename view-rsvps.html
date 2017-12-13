@@ -32,8 +32,8 @@
                             <ul class="nav navbar-nav hidden" id="loginRSVPs">
                                 <li><a href="my-rsvps.html">My RSVPs</a></li>
                             </ul>
-                            <ul class="nav navbar-nav navbar-text navbar-right">
-                                <li class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></li>
+                            <ul id="user" class="nav navbar-nav navbar-text navbar-right">
+                                <li><div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div></li>
                                 <li class="user-info"></li>
                             </ul>
                         </div>
@@ -99,9 +99,10 @@
             isLoggedIn = true;            
 
             if (isLoggedIn) {
-                $('.user-info').html( email + '</strong> (<a class="sign-out">Sign Out</a>)');
+                $('.user-info').html('<img src="' + photo + '" data-toggle="popover" data-html="true" data-placement="left" data-content="<strong>' + profile.getName() + '</strong> (<a class=\'sign-out\' href=\'#\'>Sign Out</a>)" />');
                 $('h1.navbar-brand').css('padding-top', '15px');
                 $('.g-signin2').hide();
+                $('[data-toggle="popover"]').popover();
                 $('.user-info').removeClass('hidden');
                 $('#userPhoto').html('<img src="' + photo + '" class="img-responsive" />');
                 $('#loginRSVPs').removeClass('hidden');
