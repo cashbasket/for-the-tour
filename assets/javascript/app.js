@@ -281,20 +281,17 @@ $(document).ready(function() {
 						}
 					}
 					if (touringArtistIds.length) {
+						$('#results, #containerHead').removeClass('hidden');
+						displayMap();
 						for (var j=0; j < touringArtistIds.length; j++) {
 							$.ajax('https://api.songkick.com/api/3.0/artists/' + touringArtistIds[j] + '/calendar.json?apikey=' + apiKey)
 								.done(function (calResponse) {
 									var events = calResponse.resultsPage.results.event;
 									if(events.length) {
-										displayMap();
 										for (var k=0; k < events.length; k++) {
 											var curEvent = events[k];
 											getArtistEvent(curEvent, function(curEvent) {
 												var curEventId = curEvent.id;
-
-												//resize main body nicescroll
-												$('body').getNiceScroll().resize();
-
 												//create Google Maps marker
 												var info = '<h4>' + curEvent.displayName + '</h4>';
 												marker = new google.maps.LatLng(curEvent.venue.lat, curEvent.venue.lng);
@@ -335,7 +332,6 @@ $(document).ready(function() {
 													}
 												});
 											});	
-											$('#containerHead, #results').removeClass('hidden');
 										}								
 									} else {
 										$('#containerHead').removeClass('hidden');
