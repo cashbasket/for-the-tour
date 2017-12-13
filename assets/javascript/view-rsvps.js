@@ -132,13 +132,6 @@ function viewRsvps(eventId) {
 }
 
 $(document).ready(function() {
-	$('body').niceScroll({
-		cursorwidth:12,
-		cursorcolor:'#000000',
-		cursorborder:'1px solid #fff',
-		horizrailenabled:false,
-		autohidemode:false
-	});
 	var eventId = $.urlParam('eventId');
 	getEventInfo(eventId);
 });
