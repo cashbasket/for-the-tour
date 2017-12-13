@@ -93,7 +93,7 @@ function getArtistEvent(curEvent, fn) {
 
 	var rsvpHeaderRow = $('<div class="row">');
 	var rsvpHeaderCol = $('<div class="col-md-12 rsvp-header">');
-	var rsvpHeader = $('<h4>').text('Recent RSVPs');
+	var rsvpHeader = $('<h4>').text('Latest RSVPs');
 	$('#rsvpCol-' + curEvent.id).prepend(rsvpHeaderRow.append(rsvpHeaderCol.append(rsvpHeader)));
 
 	fn(curEvent);
