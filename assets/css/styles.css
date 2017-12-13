@@ -66,6 +66,7 @@ h1.navbar-brand > a:hover {
 }
 
 #user img {
+    cursor: pointer;
     height: 45px;
     width: 45px;
     border: 1px solid #fff;
