@@ -119,7 +119,7 @@
             isLoggedIn = true;
 
             if (isLoggedIn) {
-                $('.user-info').html( email + '</strong> (<a class="sign-out">Sign Out</a>)');
+                $('.user-info').html(email + '</strong> (<a class="sign-out">Sign Out</a>)');
                 $('.g-signin2').hide();
                 $('.user-info').removeClass('hidden');
                 $('#loginRSVPs').removeClass('hidden');
@@ -160,6 +160,7 @@
                 $('#loginRSVPs').addClass('hidden');
                 isLoggedIn = false;
                 // hide user info and show sign-in button
+                $('.user-info').empty().addClass('hidden');
                 $('.g-signin2').show();
             });
         }
