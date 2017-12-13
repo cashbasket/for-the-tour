@@ -199,6 +199,39 @@ String.prototype.replaceAll = function(search, replacement) {
 	return target.replace(new RegExp(escapeRegExp(search), 'g'), replacement);
 };
 
+var map;
+function displayMap() {
+	document.getElementById('map').style.display='block';
+	initialize();
+}
+function initialize() {
+	map = new google.maps.Map(document.getElementById('map'), {
+		zoom: 3,
+		center: new google.maps.LatLng(40.779502, -73.967857)
+	});
+	google.maps.event.addListener(map, 'bounds_changed', function() {
+		bounds = map.getBounds();
+		ne = bounds.getNorthEast();
+		sw = bounds.getSouthWest();
+	});
+}
+function addMarker(location, title, info) {
+	marker = new google.maps.Marker({
+		position: location,
+		map: map,
+		title: title
+	});
+	var infowindow = new google.maps.InfoWindow({
+		content: info
+	});
+	google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){ 
+		return function() {
+			infowindow.setContent(info);
+			infowindow.open(map,marker);
+		};
+	})(marker,info,infowindow)); 
+}
+
 $(document).ready(function() {
 	$('body').niceScroll({
 		cursorwidth:12,
@@ -261,12 +294,19 @@ $(document).ready(function() {
 								.done(function (calResponse) {
 									var events = calResponse.resultsPage.results.event;
 									if(events.length) {
+										displayMap();
 										for (var k=0; k < events.length; k++) {
 											var curEvent = events[k];
 											getArtistEvent(curEvent, function(curEvent) {
 												var curEventId = curEvent.id;
 												//resize main body nicescroll
 												$('body').getNiceScroll().resize();
+
+												//create Google Maps marker
+												var info = '<h4>' + curEvent.displayName + '</h4>';
+												marker = new google.maps.LatLng(curEvent.venue.lat, curEvent.venue.lng);
+												addMarker(marker, curEvent.displayName, info);
+												
 												rsvpsRef.orderByChild('eventId').equalTo(curEventId.toString()).limitToLast(10).on('child_added', function(snapshot, previousChildKey) {
 													if(snapshot.val()) {
 														$('#rsvpCol-' + curEventId).removeClass('hidden');
