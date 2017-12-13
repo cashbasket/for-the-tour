@@ -89,7 +89,22 @@
                     });
                 }
             });
-
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (user) {
+                    //load MY rsvps
+                    var eventId = $.urlParam('eventId');
+                    setColumns($('.rsvp-results').width());
+                    $(window).on('resize', function() {	
+                        setColumns($('.rsvp-results').width());
+                        for (var i = 0; i < $('.rsvp-item').length; i++) {
+                            //reposition item
+                            positionItem(i);
+                        }
+                    });
+                    $('.rsvp-list').empty();
+                    viewRsvps(eventId);
+                }
+            });
            
             var profile = googleUser.getBasicProfile();
             var email = profile.getEmail();
@@ -133,9 +148,24 @@
                 $('.user-info').empty().addClass('hidden');
             });
         }
-       
-        $(document).ready(function() {  
-            //load the rsvps
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                //load the rsvps
+                var eventId = $.urlParam('eventId');
+                setColumns($('.rsvp-results').width());
+                $(window).on('resize', function() {	
+                    setColumns($('.rsvp-results').width());
+                    for (var i = 0; i < $('.rsvp-item').length; i++) {
+                        //reposition item
+                        positionItem(i);
+                    }
+                });
+                $('.rsvp-list').empty();
+                viewRsvps(eventId);
+            }
+        });
+        $(document).ready(function() {    
+            //load event rsvps (even if not signed in)
             var eventId = $.urlParam('eventId');
             setColumns($('.rsvp-results').width());
             $(window).on('resize', function() {	
@@ -146,8 +176,7 @@
                 }
             });
             $('.rsvp-list').empty();
-            viewRsvps(eventId);  
-
+            viewRsvps(eventId);        
             $('body').on('click', '.sign-out', function() {
                 signOut();
             });
