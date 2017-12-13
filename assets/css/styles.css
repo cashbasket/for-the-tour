@@ -36,8 +36,26 @@ h1.navbar-brand {
 
 h1.navbar-brand > a,
 h1.navbar-brand > a:hover {
-	color: #fff;
+    color: #fff;
+    margin-right: 20px;
 	text-decoration: none;
+}
+
+#nav-items a:hover,
+.navbar-toggle:focus,
+.navbar-toggle:hover {
+	background-color: #4c687c;
+}
+
+#loginRSVPs a {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.sign-out:hover,
+.navbar-toggle:focus,
+.navbar-toggle:hover {
+	background-color: inherit !important;
 }
 
 .home-search {
