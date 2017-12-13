@@ -323,7 +323,7 @@ $(document).ready(function() {
 																//initialize nicescroll on rsvp div
 																$('#rsvp-' + curEventId).niceScroll({
 																	cursorwidth:8,
-																	cursorcolor:'#4c687c',
+																	cursorcolor:'#41494e',
 																	cursorborder:'none',
 																	horizrailenabled:false,
 																	autohidemode:'leave'
