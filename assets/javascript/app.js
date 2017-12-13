@@ -65,7 +65,7 @@ function getArtistEvent(curEvent, fn) {
 
 	var eventDiv = $('<div class="panel panel-event event">');
 	var eventDivHeader = $('<div class="panel-heading">');
-	var eventDivTitle = $('<h3 class="panel-title">').text(curEvent.displayName.replace('Unknown venue', 'TBA'));
+	var eventDivTitle = $('<h3 class="panel-title">').html('<span id="' + curEvent.id + '"></span>' + curEvent.displayName.replace('Unknown venue', 'TBA'));
 	var eventDivBody = $('<div class="panel-body">');
 	var eventDivRow = $('<div class="row">');
 	var detailsCol = $('<div class="col-md-7">');
@@ -232,6 +232,70 @@ function addMarker(location, title, info) {
 	})(marker,info,infowindow)); 
 }
 
+function getArtistCalendar(artistId) {
+	$.ajax('https://api.songkick.com/api/3.0/artists/' + artistId + '/calendar.json?apikey=' + apiKey)
+		.done(function (calResponse) {
+			var events = calResponse.resultsPage.results.event;
+			if(events.length) {
+				for (var k=0; k < events.length; k++) {
+					var curEvent = events[k];
+					getArtistEvent(curEvent, function(curEvent) {
+						var curEventId = curEvent.id;
+						if(curEvent.venue && curEvent.venue.displayName !== 'Unknown venue' && curEvent.venue.lat && curEvent.venue.lng) {
+							//create Google Maps marker
+							var info = '<a href="#' + curEventId + '">' + curEvent.displayName + '</a>';
+							var marker = new google.maps.LatLng(curEvent.venue.lat, curEvent.venue.lng);
+							addMarker(marker, curEvent.displayName, info);
+						}
+						getRecentRSVPs(curEventId);
+					});	
+				}								
+			} else {
+				$('#containerHead').removeClass('hidden');
+				$('.no-results').removeClass('hidden');
+			}
+		})
+		.fail(function() {
+			$('#results').append('<p class="apiError">An error occurred while retrieving event data from the API :(');
+		});
+}
+
+function getRecentRSVPs(curEventId) {
+	rsvpsRef.orderByChild('eventId').equalTo(curEventId.toString()).limitToLast(10).on('child_added', function(snapshot, previousChildKey) {
+		if(snapshot.val()) {
+			$('#rsvpCol-' + curEventId).removeClass('hidden');
+			var rsvpRow  = $('<div class="row rsvp-row ' + snapshot.key +'">');
+			var rsvpCol = $('<div class="col-md-12">');
+			var rsvpName, rsvpPhoto, message;
+			var rsvpTimestamp = moment.unix(snapshot.val().timestamp).format('MM/DD/YYYY @ h:mma');
+			var emptyRsvp = rsvpRow.append(rsvpCol);
+			if(previousChildKey) {
+				emptyRsvp.insertBefore('#rsvp-' + curEventId + ' > .' + previousChildKey);
+			} else {
+				$('#rsvp-' + curEventId).prepend(emptyRsvp);
+			}
+			database.ref('/users/' + snapshot.val().uid).once('value', function(userSnap) {
+				if (userSnap.val()) {
+					rsvpName = $('<strong>').text(userSnap.val().name);
+					rsvpPhoto = $('<img>').attr('src', userSnap.val().photoUrl).addClass('rsvp-img pull-right');
+					rsvpTimestamp = $('<em>').text(rsvpTimestamp);
+					message = snapshot.val().message != '<p><br></p>' ? snapshot.val().message : '<p><em>(This person is no fun and didn\'t leave a message.)</em></p>';
+					$('.' + snapshot.key + ' .col-md-12').append(rsvpPhoto).append(rsvpName).append('<br>').append(rsvpTimestamp).append(message);
+					//initialize nicescroll on rsvp div
+					$('#rsvp-' + curEventId).niceScroll({
+						cursorwidth:8,
+						cursorcolor:'#41494e',
+						cursorborder:'none',
+						horizrailenabled:false,
+						autohidemode:'leave'
+					});
+					$('#rsvp-' + curEventId).getNiceScroll().resize();
+				}
+			});
+			$('#viewRsvp-' + curEventId).removeClass('hidden');
+		}
+	});
+}
 $(document).ready(function() {
 	//initialize Quill.js
 	if($('#messageText').length) {
@@ -284,63 +348,7 @@ $(document).ready(function() {
 						$('#results, #containerHead').removeClass('hidden');
 						displayMap();
 						for (var j=0; j < touringArtistIds.length; j++) {
-							$.ajax('https://api.songkick.com/api/3.0/artists/' + touringArtistIds[j] + '/calendar.json?apikey=' + apiKey)
-								.done(function (calResponse) {
-									var events = calResponse.resultsPage.results.event;
-									if(events.length) {
-										for (var k=0; k < events.length; k++) {
-											var curEvent = events[k];
-											getArtistEvent(curEvent, function(curEvent) {
-												var curEventId = curEvent.id;
-												//create Google Maps marker
-												var info = '<h4>' + curEvent.displayName + '</h4>';
-												marker = new google.maps.LatLng(curEvent.venue.lat, curEvent.venue.lng);
-												addMarker(marker, curEvent.displayName, info);
-
-												rsvpsRef.orderByChild('eventId').equalTo(curEventId.toString()).limitToLast(10).on('child_added', function(snapshot, previousChildKey) {
-													if(snapshot.val()) {
-														$('#rsvpCol-' + curEventId).removeClass('hidden');
-														var rsvpRow  = $('<div class="row rsvp-row ' + snapshot.key +'">');
-														var rsvpCol = $('<div class="col-md-12">');
-														var rsvpName, rsvpPhoto, message;
-														var rsvpTimestamp = moment.unix(snapshot.val().timestamp).format('MM/DD/YYYY @ h:mma');
-														var emptyRsvp = rsvpRow.append(rsvpCol);
-														if(previousChildKey) {
-															emptyRsvp.insertBefore('#rsvp-' + curEventId + ' > .' + previousChildKey);
-														} else {
-															$('#rsvp-' + curEventId).prepend(emptyRsvp);
-														}
-														database.ref('/users/' + snapshot.val().uid).once('value', function(userSnap) {
-															if (userSnap.val()) {
-																rsvpName = $('<strong>').text(userSnap.val().name);
-																rsvpPhoto = $('<img>').attr('src', userSnap.val().photoUrl).addClass('rsvp-img pull-right');
-																rsvpTimestamp = $('<em>').text(rsvpTimestamp);
-																message = snapshot.val().message != '<p><br></p>' ? snapshot.val().message : '<p><em>(This person is no fun and didn\'t leave a message.)</em></p>';
-																$('.' + snapshot.key + ' .col-md-12').append(rsvpPhoto).append(rsvpName).append('<br>').append(rsvpTimestamp).append(message);
-																//initialize nicescroll on rsvp div
-																$('#rsvp-' + curEventId).niceScroll({
-																	cursorwidth:8,
-																	cursorcolor:'#41494e',
-																	cursorborder:'none',
-																	horizrailenabled:false,
-																	autohidemode:'leave'
-																});
-																$('#rsvp-' + curEventId).getNiceScroll().resize();
-															}
-														});
-														$('#viewRsvp-' + curEventId).removeClass('hidden');
-													}
-												});
-											});	
-										}								
-									} else {
-										$('#containerHead').removeClass('hidden');
-										$('.no-results').removeClass('hidden');
-									}
-								})
-								.fail(function() {
-									$('#results').append('<p class="apiError">An error occurred while retrieving event data from the API :(');
-								});
+							getArtistCalendar(touringArtistIds[j]);
 						}
 					} else {
 						$('#containerHead').removeClass('hidden');
