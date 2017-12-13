@@ -233,14 +233,6 @@ function addMarker(location, title, info) {
 }
 
 $(document).ready(function() {
-	$('body').niceScroll({
-		cursorwidth:12,
-		cursorcolor:'#000000',
-		cursorborder:'1px solid #fff',
-		horizrailenabled:false,
-		autohidemode:false
-	});
-
 	//initialize Quill.js
 	if($('#messageText').length) {
 		var editor = new Quill('#messageText', {
@@ -299,6 +291,7 @@ $(document).ready(function() {
 											var curEvent = events[k];
 											getArtistEvent(curEvent, function(curEvent) {
 												var curEventId = curEvent.id;
+
 												//resize main body nicescroll
 												$('body').getNiceScroll().resize();
 
@@ -306,7 +299,7 @@ $(document).ready(function() {
 												var info = '<h4>' + curEvent.displayName + '</h4>';
 												marker = new google.maps.LatLng(curEvent.venue.lat, curEvent.venue.lng);
 												addMarker(marker, curEvent.displayName, info);
-												
+
 												rsvpsRef.orderByChild('eventId').equalTo(curEventId.toString()).limitToLast(10).on('child_added', function(snapshot, previousChildKey) {
 													if(snapshot.val()) {
 														$('#rsvpCol-' + curEventId).removeClass('hidden');
