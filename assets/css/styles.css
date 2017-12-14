@@ -504,6 +504,9 @@ footer {
 }
 
 @media screen and (max-width: 767px) {
+    body {
+        overflow-y: scroll;
+    }
     .sub-search {
         float: none;
     }
