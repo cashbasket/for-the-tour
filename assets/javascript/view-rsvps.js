@@ -133,5 +133,23 @@ function viewRsvps(eventId) {
 
 $(document).ready(function() {
 	var eventId = $.urlParam('eventId');
-	getEventInfo(eventId);
+
+	if(eventId) {
+		getEventInfo(eventId);
+		
+		setColumns($('.rsvp-results').width());
+		$(window).on('resize', function() {	
+			setColumns($('.rsvp-results').width());
+			for (var i = 0; i < $('.rsvp-item').length; i++) {
+				//reposition item
+				positionItem(i);
+			}
+		});
+		$('.rsvp-list').empty();
+		viewRsvps(eventId);    
+	}
+         
+	$('body').on('click', '.sign-out', function() {
+		signOut();
+	});
 });
