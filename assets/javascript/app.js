@@ -222,7 +222,8 @@ function addMarker(location, title, info) {
 		title: title
 	});
 	var infowindow = new google.maps.InfoWindow({
-		content: info
+		content: info,
+		maxWidth: 200
 	});
 	google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){ 
 		return function() {
