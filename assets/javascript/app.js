@@ -206,8 +206,8 @@ function displayMap() {
 }
 function initialize() {
 	map = new google.maps.Map(document.getElementById('map'), {
-		zoom: 3,
-		center: new google.maps.LatLng(40.779502, -73.967857)
+		zoom: 2,
+		center: new google.maps.LatLng(20, 0)
 	});
 	google.maps.event.addListener(map, 'bounds_changed', function() {
 		bounds = map.getBounds();
