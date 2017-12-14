@@ -377,7 +377,7 @@ $(document).ready(function() {
 		});
 						
 		database.ref('/users/' + userId + '/user-rsvps').once('value', function(snapshot) {
-			if ($('.user-info').text().length) {
+			if ($('.user-info').html().length) {
 				$('#rsvp-container, #rsvpSubmit').removeClass('hidden');
 			}
 			if(snapshot.val()) {
