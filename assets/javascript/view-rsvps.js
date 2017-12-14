@@ -133,6 +133,7 @@ function viewRsvps(eventId) {
 
 $(document).ready(function() {
 	var eventId = $.urlParam('eventId');
+	var oldURL = document.referrer;
 
 	if(eventId) {
 		getEventInfo(eventId);
@@ -145,6 +146,9 @@ $(document).ready(function() {
 				positionItem(i);
 			}
 		});
+		if (oldURL.indexOf('search.html') > 0) {
+			$('.last-search').html('<a href="' + oldURL + '">&laquo; Back to Search Results</a>');
+		}
 		$('.rsvp-list').empty();
 		viewRsvps(eventId);    
 	}

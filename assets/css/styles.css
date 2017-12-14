@@ -247,6 +247,11 @@ p {
     width: 340px;
 }
 
+.last-search {
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
 .btn-home,
 .btn-sub {
     background: #7f8e99;

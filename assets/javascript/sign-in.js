@@ -46,6 +46,7 @@ function onSignIn(googleUser) {
 	firebase.auth().onAuthStateChanged(function(user) {
 		if (user && !eventId && $('.rsvp-list').length) {
 			//load MY rsvps
+			var oldURL = document.referrer;
 			setColumns($('.rsvp-results').width());
 			$(window).on('resize', function() {	
 				setColumns($('.rsvp-results').width());
@@ -54,6 +55,9 @@ function onSignIn(googleUser) {
 					positionItem(i);
 				}
 			});
+			if (oldURL.indexOf('search.html') > 0) {
+				$('.last-search').html('<a href="' + oldURL + '">&laquo; Back to Search Results</a>');
+			}
 			$('.rsvp-list').empty();
 			viewRsvps(eventId);
 		}
