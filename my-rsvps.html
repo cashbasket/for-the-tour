@@ -56,25 +56,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="assets/javascript/jquery.nicescroll.min.js"></script>
     <script src="assets/javascript/sign-in.js"></script>
-    <script>
-        firebase.auth().onAuthStateChanged(function(user) {
-		if (user) {
-            console.log('TEST');
-            //load MY rsvps
-            var eventId = $.urlParam('eventId');
-			setColumns($('.rsvp-results').width());
-			$(window).on('resize', function() {	
-				setColumns($('.rsvp-results').width());
-				for (var i = 0; i < $('.rsvp-item').length; i++) {
-					//reposition item
-					positionItem(i);
-				}
-			});
-			$('.rsvp-list').empty();
-			viewRsvps(eventId);
-		}
-	});
-    </script>
     <script src="assets/javascript/view-rsvps.js"></script>
 </body>
 </html>
