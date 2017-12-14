@@ -45,7 +45,6 @@ function onSignIn(googleUser) {
 	var eventId = $.urlParam('eventId');
 	firebase.auth().onAuthStateChanged(function(user) {
 		if (user && !eventId && $('.rsvp-list').length) {
-			console.log('TEST');
 			//load MY rsvps
 			setColumns($('.rsvp-results').width());
 			$(window).on('resize', function() {	
