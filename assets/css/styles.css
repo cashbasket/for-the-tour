@@ -244,7 +244,8 @@ p {
 
 .main-image {
     margin: 0 auto 20px auto;
-    display: block;
+    width: 340px;
+    height: 270px;
 }
 
 .btn-home,
