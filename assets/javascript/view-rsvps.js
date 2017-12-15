@@ -59,6 +59,7 @@ function buildMyItem(eventId, eventStart, title, timestamp, message, index) {
 	var rsvpTime = moment.unix(timestamp).format('M/DD/YYYY @ h:mma');
 
 	var rsvpItem = $('<li>').attr('id', 'rsvp-' + index).addClass('rsvp-item');
+	var eventTitleDiv = $('<div>');
 	var eventTitle = $('<strong class="my-rsvp-title">').text(title);
 	var editAnchor = $('<a>').attr('href', 'javascript:void(0);')
 		.attr('id', 'edit-' + eventId)
@@ -67,19 +68,17 @@ function buildMyItem(eventId, eventStart, title, timestamp, message, index) {
 		.addClass('edit-rsvp')
 		.attr('data-text', message)
 		.attr('data-target', '#rsvpModal');
-	var editIconDiv = $('<div>').addClass('edit-icon-div pull-right');
+	var editIconDiv = $('<div>').addClass('edit-icon-div');
 	var editIcon = $('<i class="fas fa-edit">').attr('id', 'edit-' + eventId);
 	var msgDiv = $('<div>').attr('id', 'rsvpText-' + eventId).addClass('rsvp-text').html(message);
 	var timestampDiv = $('<div class="timestamp" />');
 	var rsvpTimestamp = $('<em>').attr('id', 'timestamp-' + eventId).text(rsvpTime);
 
 	if (eventStart < moment().unix()) {
-		$('.rsvp-list').append(rsvpItem.append(eventTitle).append(msgDiv).append(timestampDiv.append(rsvpTimestamp)));
+		$('.rsvp-list').append(rsvpItem.append(eventTitleDiv.append(eventTitle)).append(msgDiv).append(timestampDiv.append(rsvpTimestamp)));
 	} else {
-		$('.rsvp-list').append(rsvpItem.append(editIconDiv.append(editAnchor.append(editIcon))).append(eventTitle).append(msgDiv).append(timestampDiv.append(rsvpTimestamp)));
+		$('.rsvp-list').append(rsvpItem.append(eventTitleDiv.append(eventTitle)).append(msgDiv.append(editIconDiv.append(editAnchor.append(editIcon).append(' Edit')))).append(timestampDiv.append(rsvpTimestamp)));
 	}
-
-	positionItem(index);
 }
 
 function buildItem(name, photo, timestamp, message, index) {
@@ -90,33 +89,33 @@ function buildItem(name, photo, timestamp, message, index) {
 	var timestampDiv = $('<div class="timestamp" />');
 	var rsvpTimestamp = $('<em>').text(rsvpTime);
 	$('.rsvp-list').append(rsvpItem.append(userPhoto).append(userName).append(message).append(timestampDiv.append(rsvpTimestamp)));
-
-	positionItem(index);
 }
 
-function positionItem(index) {
-	// this determines the value of the "left" css property to be used (see global "columnLefts" array)
-	left = columnLefts[index % numCols];
+function positionItems(length) {
+	for(var i=0; i < length; i++) {
+		// this determines the value of the "left" css property to be used (see global "columnLefts" array)
+		left = columnLefts[i % numCols];
 	
-	if(index > numCols - 1) {
+		if(i > numCols - 1) {
 		// find height of last item in same column as item to be updated
-		lastInColHeight = $('#rsvp-' + (index - numCols)).outerHeight(true);
-		// find "top" css value of last item in same column as item to be updated
-		lastInColTop = $('#rsvp-' + (index - numCols)).css('top').split('p')[0];
-		// append "style" HTML attribute to item to position it properly
-		$('#rsvp-' + index).attr('style', 'width: ' + colWidth + 'px; position: absolute; left: ' + left + 'px; top: ' + (parseInt(lastInColHeight) + parseInt(lastInColTop) + gutterWidth + 'px'));
-	} else {
-		lastInColHeight = $('#rsvp-' + index).outerHeight(true);
-		lastInColTop = 0;
-		$('#rsvp-' + index).attr('style', 'width: ' + colWidth + 'px; position: absolute; left: ' + left + 'px; top: ' + parseInt(lastInColTop) + 'px');
-	}
+			lastInColHeight = $('#rsvp-' + (i - numCols)).outerHeight();
+			// find "top" css value of last item in same column as item to be updated
+			lastInColTop = $('#rsvp-' + (i - numCols)).css('top').split('p')[0];
+			// append "style" HTML attribute to item to position it properly
+			$('#rsvp-' + i).attr('style', 'width: ' + colWidth + 'px; position: absolute; left: ' + left + 'px; top: ' + (parseInt(lastInColHeight) + parseInt(lastInColTop) + gutterWidth + 'px'));
+		} else {
+			lastInColTop = 0;
+			$('#rsvp-' + i).attr('style', 'width: ' + colWidth + 'px; position: absolute; left: ' + left + 'px; top: ' + parseInt(lastInColTop) + 'px');
+		}
+		console.log('item ' + i + ': ' + lastInColHeight + ', ' + lastInColTop);
+	}	
 }
 
 function viewRsvps(eventId) {
 	if(eventId === undefined) {
 		// MY RSVPS
 		database.ref('/users/' + userId + '/user-rsvps').on('value', function(snapshot) {
-			const userData = snapshot.val();
+			var userData = snapshot.val();
 			if(userData) {
 				snapshot.forEach(function(child) {
 					database.ref('/events').orderByChild('eventId').equalTo(child.val().eventId.toString()).on('value', function(eventSnap) {
@@ -124,6 +123,9 @@ function viewRsvps(eventId) {
 							eventSnap.forEach(function(eventChild) {
 								buildMyItem(child.val().eventId.toString(), eventChild.val().eventStart, eventChild.val().eventTitle, child.val().timestamp, child.val().message, $('.rsvp-item').length);
 							});
+							setTimeout ( function () {
+								positionItems($('.rsvp-item').length);
+							}, 1);
 						}
 					});                    
 				});
@@ -154,10 +156,7 @@ $(document).ready(function() {
 		setColumns($('.rsvp-results').width());
 		$(window).on('resize', function() {	
 			setColumns($('.rsvp-results').width());
-			for (var i = 0; i < $('.rsvp-item').length; i++) {
-				//reposition item
-				positionItem(i);
-			}
+			positionItems($('.rsvp-item').length);
 		});
 		if (oldURL.indexOf('search.html') > 0) {
 			$('.last-search').html('<a href="' + oldURL + '">&laquo; Back to Search Results</a>');

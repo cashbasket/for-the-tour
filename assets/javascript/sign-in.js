@@ -50,10 +50,7 @@ function onSignIn(googleUser) {
 			setColumns($('.rsvp-results').width());
 			$(window).on('resize', function() {	
 				setColumns($('.rsvp-results').width());
-				for (var i = 0; i < $('.rsvp-item').length; i++) {
-					//reposition item
-					positionItem(i);
-				}
+				positionItems($('.rsvp-item').length);
 			});
 			if (oldURL.indexOf('search.html') > 0) {
 				$('.last-search').html('<a href="' + oldURL + '">&laquo; Back to Search Results</a>');

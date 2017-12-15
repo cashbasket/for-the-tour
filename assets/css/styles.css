@@ -445,7 +445,11 @@ ol {
 
 .edit-icon-div {
     cursor: pointer;
-    margin: 0 0 10px 10px;
+    margin: 10px 0;
+}
+
+.edit-icon-div a {
+    text-decoration: none;
 }
 
 .rsvp-row {
