@@ -63,6 +63,7 @@ function buildMyItem(eventId, title, timestamp, message, index) {
 	var editAnchor = $('<a>').attr('href', 'javascript:void(0);')
 		.attr('id', 'edit-' + eventId)
 		.attr('data-id', eventId)
+		.attr('data-title', title)
 		.addClass('edit-rsvp')
 		.attr('data-text', message)
 		.attr('data-target', '#rsvpModal');
@@ -70,7 +71,7 @@ function buildMyItem(eventId, title, timestamp, message, index) {
 	var editIcon = $('<i class="fas fa-edit">').attr('id', 'edit-' + eventId);
 	var msgDiv = $('<div>').attr('id', 'rsvpText-' + eventId).addClass('rsvp-text').html(message);
 	var timestampDiv = $('<div class="timestamp" />');
-	var rsvpTimestamp = $('<em>').text(rsvpTime);
+	var rsvpTimestamp = $('<em>').attr('id', 'timestamp-' + eventId).text(rsvpTime);
 
 	$('.rsvp-list').append(rsvpItem.append(editIconDiv.append(editAnchor.append(editIcon))).append(eventTitle).append(msgDiv).append(timestampDiv.append(rsvpTimestamp)));
 
@@ -186,48 +187,59 @@ $(document).ready(function() {
 		$('#charsLeft').text(maxRsvpChars - editor.getLength() + 1);
 		$('body').on('click', '.edit-rsvp', function() {
 			$('.ql-editor').html($(this).attr('data-text'));
+			$('#eventTitle').text($(this).attr('data-title'));
 			$('#eventId').val($(this).data('id'));
-			$('#editSuccess').addClass('hidden');
+			$('#editSuccess, .rsvp-warning, .rsvp-no-edits').addClass('hidden');
 			$('#rsvp-container, #rsvpSubmit').removeClass('hidden');
 			$('#rsvpModal').modal({backdrop: 'static', keyboard: false}, $(this));
 		});
 		$('#rsvpEditForm').on('submit', function(event) {
 			event.preventDefault();
 			var message = $('.ql-editor').html().replace('ql-indent-1', 'indent-1').replace('ql-indent-2', 'indent-2');
-			database.ref('/users/' + userId + '/user-rsvps').orderByChild('eventId').equalTo($('#eventId').val()).once('value', function(eventSnap) {
-				if (eventSnap.val()) {
-					var key = Object.keys(eventSnap.val())[0];
-					database.ref('/users/' + userId + '/user-rsvps/').child(key).update({
-						message: message,
-						timestamp: moment().format('X')
-					}, function(error) {
-						if (!error) {
-							$('#editSuccess').removeClass('hidden');
-							$('#rsvp-container, #rsvpSubmit').addClass('hidden');
-							$('#rsvpText-' + $('#eventId').val()).html(message);
-							$('#edit-' + $('#eventId').val()).attr('data-text', message);
-							for(var i=0; i < $('.rsvp-item').length - 1; i++) {
-								positionItem(i);
+			if(message === '<p><br></p>') {
+				// Let user know a message is required.
+				$('.rsvp-warning').removeClass('hidden');
+				$('.rsvp-no-edits').addClass('hidden');
+			} else if (message === $('#edit-' + $('#eventId').val()).attr('data-text')) {
+				$('.rsvp-warning').addClass('hidden');
+				$('.rsvp-no-edits').removeClass('hidden');
+			} else {
+				database.ref('/users/' + userId + '/user-rsvps').orderByChild('eventId').equalTo($('#eventId').val()).once('value', function(eventSnap) {
+					if (eventSnap.val()) {
+						var key = Object.keys(eventSnap.val())[0];
+						database.ref('/users/' + userId + '/user-rsvps/').child(key).update({
+							message: message,
+							timestamp: moment().format('X')
+						}, function(error) {
+							if (!error) {
+								$('#editSuccess').removeClass('hidden').delay(5000).fadeOut(3000);
+								$('#rsvpText-' + $('#eventId').val()).html(message);
+								$('#timestamp-' + $('#eventId').val()).text(moment().format('M/D/YYYY @ h:mma'));
+								$('#edit-' + $('#eventId').val()).attr('data-text', message);
+								for(var i=0; i < $('.rsvp-item').length - 1; i++) {
+									positionItem(i);
+								}
 							}
-						}
-					});
-				}	
-			});
-			database.ref('/rsvps').orderByChild('eventId').equalTo($('#eventId').val().toString()).once('value', function(eventSnap) {
-				if (eventSnap.val()) {
-					eventSnap.forEach(function(childSnap) {
-						if(childSnap.val().uid === userId) {
-							database.ref('/rsvps/' + childSnap.key).update({
-								message: message,
-								timestamp: moment().format('X')
-							});
-						}
-					});
-				}	
-			});
+						});
+					}	
+				});
+				database.ref('/rsvps').orderByChild('eventId').equalTo($('#eventId').val().toString()).once('value', function(eventSnap) {
+					if (eventSnap.val()) {
+						eventSnap.forEach(function(childSnap) {
+							if(childSnap.val().uid === userId) {
+								database.ref('/rsvps/' + childSnap.key).update({
+									message: message,
+									timestamp: moment().format('X')
+								});
+							}
+						});
+					}	
+				});
+			}
 		});
 	}
 	$('body').on('click', '.sign-out', function() {
 		signOut();
+		$('.rsvp-list').empty();
 	});
 });
