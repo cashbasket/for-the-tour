@@ -55,16 +55,24 @@ function setColumns(width) {
 	}
 }
 
-function buildMyItem(title, timestamp, message, index) {		
+function buildMyItem(eventId, title, timestamp, message, index) {		
 	var rsvpTime = moment.unix(timestamp).format('M/DD/YYYY @ h:mma');
 
 	var rsvpItem = $('<li>').attr('id', 'rsvp-' + index).addClass('rsvp-item');
-	var eventTitle = $('<h3>').text(title);
-	var msgDiv = $('<div>').html(message);
+	var eventTitle = $('<strong class="my-rsvp-title">').text(title);
+	var editAnchor = $('<a>').attr('href', 'javascript:void(0);')
+		.attr('id', 'edit-' + eventId)
+		.attr('data-id', eventId)
+		.addClass('edit-rsvp')
+		.attr('data-text', message)
+		.attr('data-target', '#rsvpModal');
+	var editIconDiv = $('<div>').addClass('edit-icon-div pull-right');
+	var editIcon = $('<i class="fas fa-edit">').attr('id', 'edit-' + eventId);
+	var msgDiv = $('<div>').attr('id', 'rsvpText-' + eventId).addClass('rsvp-text').html(message);
 	var timestampDiv = $('<div class="timestamp" />');
 	var rsvpTimestamp = $('<em>').text(rsvpTime);
 
-	$('.rsvp-list').append(rsvpItem.append(eventTitle).append(msgDiv).append(timestampDiv.append(rsvpTimestamp)));
+	$('.rsvp-list').append(rsvpItem.append(editIconDiv.append(editAnchor.append(editIcon))).append(eventTitle).append(msgDiv).append(timestampDiv.append(rsvpTimestamp)));
 
 	positionItem(index);
 }
@@ -102,14 +110,14 @@ function positionItem(index) {
 function viewRsvps(eventId) {
 	if(eventId === undefined) {
 		// MY RSVPS
-		database.ref('/users/' + userId + '/user-rsvps').once('value', function(snapshot) {
+		database.ref('/users/' + userId + '/user-rsvps').on('value', function(snapshot) {
 			const userData = snapshot.val();
 			if(userData) {
 				snapshot.forEach(function(child) {
-					database.ref('/events').orderByChild('eventId').equalTo(child.val().eventId.toString()).once('value', function(eventSnap) {
+					database.ref('/events').orderByChild('eventId').equalTo(child.val().eventId.toString()).on('value', function(eventSnap) {
 						if (eventSnap.val()) {
 							eventSnap.forEach(function(eventChild) {
-								buildMyItem(eventChild.val().eventTitle, child.val().timestamp, child.val().message, $('.rsvp-item').length);
+								buildMyItem(child.val().eventId.toString(), eventChild.val().eventTitle, child.val().timestamp, child.val().message, $('.rsvp-item').length);
 							});
 						}
 					});                    
@@ -151,8 +159,74 @@ $(document).ready(function() {
 		}
 		$('.rsvp-list').empty();
 		viewRsvps(eventId);    
+	} else {
+		var editor = new Quill('#messageText', {
+			modules: {
+				toolbar: [
+					['bold', 'italic'],
+					['link', 'blockquote'],
+					[{ list: 'ordered' }, { list: 'bullet' }]
+				]
+			},
+			placeholder: 'Type something cool...',
+			theme: 'snow'
+		});
+		const maxRsvpChars = 280;
+		editor.on('text-change', function () {
+			if (editor.getLength() > maxRsvpChars) {
+				editor.deleteText(maxRsvpChars, editor.getLength());
+			}
+			$('#charsLeft').text(maxRsvpChars - editor.getLength() + 1);
+			if(editor.getLength() > 200) {
+				$('#charsLeft').addClass('red');
+			} else {
+				$('#charsLeft').removeClass('red');
+			}
+		});
+		$('#charsLeft').text(maxRsvpChars - editor.getLength() + 1);
+		$('body').on('click', '.edit-rsvp', function() {
+			$('.ql-editor').html($(this).attr('data-text'));
+			$('#eventId').val($(this).data('id'));
+			$('#editSuccess').addClass('hidden');
+			$('#rsvp-container, #rsvpSubmit').removeClass('hidden');
+			$('#rsvpModal').modal({backdrop: 'static', keyboard: false}, $(this));
+		});
+		$('#rsvpEditForm').on('submit', function(event) {
+			event.preventDefault();
+			var message = $('.ql-editor').html().replace('ql-indent-1', 'indent-1').replace('ql-indent-2', 'indent-2');
+			database.ref('/users/' + userId + '/user-rsvps').orderByChild('eventId').equalTo($('#eventId').val()).once('value', function(eventSnap) {
+				if (eventSnap.val()) {
+					var key = Object.keys(eventSnap.val())[0];
+					database.ref('/users/' + userId + '/user-rsvps/').child(key).update({
+						message: message,
+						timestamp: moment().format('X')
+					}, function(error) {
+						if (!error) {
+							$('#editSuccess').removeClass('hidden');
+							$('#rsvp-container, #rsvpSubmit').addClass('hidden');
+							$('#rsvpText-' + $('#eventId').val()).html(message);
+							$('#edit-' + $('#eventId').val()).attr('data-text', message);
+							for(var i=0; i < $('.rsvp-item').length - 1; i++) {
+								positionItem(i);
+							}
+						}
+					});
+				}	
+			});
+			database.ref('/rsvps').orderByChild('eventId').equalTo($('#eventId').val().toString()).once('value', function(eventSnap) {
+				if (eventSnap.val()) {
+					eventSnap.forEach(function(childSnap) {
+						if(childSnap.val().uid === userId) {
+							database.ref('/rsvps/' + childSnap.key).update({
+								message: message,
+								timestamp: moment().format('X')
+							});
+						}
+					});
+				}	
+			});
+		});
 	}
-         
 	$('body').on('click', '.sign-out', function() {
 		signOut();
 	});
