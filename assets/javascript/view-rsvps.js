@@ -219,9 +219,7 @@ $(document).ready(function() {
 								$('#rsvpText-' + $('#eventId').val()).html(message);
 								$('#timestamp-' + $('#eventId').val()).text(moment().format('M/D/YYYY @ h:mma'));
 								$('#edit-' + $('#eventId').val()).attr('data-text', message);
-								for(var i=0; i < $('.rsvp-item').length - 1; i++) {
-									positionItem(i);
-								}
+								positionItems($('.rsvp-item').length);
 							}
 						});
 					}	
