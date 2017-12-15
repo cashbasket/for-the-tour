@@ -55,7 +55,7 @@ function setColumns(width) {
 	}
 }
 
-function buildMyItem(eventId, title, timestamp, message, index) {		
+function buildMyItem(eventId, eventStart, title, timestamp, message, index) {		
 	var rsvpTime = moment.unix(timestamp).format('M/DD/YYYY @ h:mma');
 
 	var rsvpItem = $('<li>').attr('id', 'rsvp-' + index).addClass('rsvp-item');
@@ -73,7 +73,11 @@ function buildMyItem(eventId, title, timestamp, message, index) {
 	var timestampDiv = $('<div class="timestamp" />');
 	var rsvpTimestamp = $('<em>').attr('id', 'timestamp-' + eventId).text(rsvpTime);
 
-	$('.rsvp-list').append(rsvpItem.append(editIconDiv.append(editAnchor.append(editIcon))).append(eventTitle).append(msgDiv).append(timestampDiv.append(rsvpTimestamp)));
+	if (eventStart < moment().unix()) {
+		$('.rsvp-list').append(rsvpItem.append(eventTitle).append(msgDiv).append(timestampDiv.append(rsvpTimestamp)));
+	} else {
+		$('.rsvp-list').append(rsvpItem.append(editIconDiv.append(editAnchor.append(editIcon))).append(eventTitle).append(msgDiv).append(timestampDiv.append(rsvpTimestamp)));
+	}
 
 	positionItem(index);
 }
@@ -118,7 +122,7 @@ function viewRsvps(eventId) {
 					database.ref('/events').orderByChild('eventId').equalTo(child.val().eventId.toString()).on('value', function(eventSnap) {
 						if (eventSnap.val()) {
 							eventSnap.forEach(function(eventChild) {
-								buildMyItem(child.val().eventId.toString(), eventChild.val().eventTitle, child.val().timestamp, child.val().message, $('.rsvp-item').length);
+								buildMyItem(child.val().eventId.toString(), eventChild.val().eventStart, eventChild.val().eventTitle, child.val().timestamp, child.val().message, $('.rsvp-item').length);
 							});
 						}
 					});                    
