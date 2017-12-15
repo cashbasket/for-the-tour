@@ -62,13 +62,16 @@ function buildMyItem(eventId, eventStart, title, timestamp, message, index) {
 	var eventTitleDiv = $('<div>');
 	var eventTitle = $('<strong class="my-rsvp-title">').text(title);
 	var editAnchor = $('<a>').attr('href', 'javascript:void(0);')
+		.attr('title', 'Edit')
+		.attr('data-toggle', 'tooltip')
+		.attr('data-placement', 'top')
 		.attr('id', 'edit-' + eventId)
 		.attr('data-id', eventId)
 		.attr('data-title', title)
 		.addClass('edit-rsvp')
 		.attr('data-text', message)
 		.attr('data-target', '#rsvpModal');
-	var editIconDiv = $('<div>').addClass('edit-icon-div');
+	var editIconDiv = $('<div>').addClass('edit-icon-div pull-right');
 	var editIcon = $('<i class="fas fa-edit">').attr('id', 'edit-' + eventId);
 	var msgDiv = $('<div>').attr('id', 'rsvpText-' + eventId).addClass('rsvp-text').html(message);
 	var timestampDiv = $('<div class="timestamp" />');
@@ -77,7 +80,7 @@ function buildMyItem(eventId, eventStart, title, timestamp, message, index) {
 	if (eventStart < moment().unix()) {
 		$('.rsvp-list').append(rsvpItem.append(eventTitleDiv.append(eventTitle)).append(msgDiv).append(timestampDiv.append(rsvpTimestamp)));
 	} else {
-		$('.rsvp-list').append(rsvpItem.append(eventTitleDiv.append(eventTitle)).append(msgDiv.append(editIconDiv.append(editAnchor.append(editIcon).append(' Edit')))).append(timestampDiv.append(rsvpTimestamp)));
+		$('.rsvp-list').append(rsvpItem.append(editIconDiv.append(editAnchor.append(editIcon))).append(eventTitleDiv.append(eventTitle)).append(msgDiv).append(timestampDiv.append(rsvpTimestamp)));
 	}
 }
 
@@ -107,7 +110,6 @@ function positionItems(length) {
 			lastInColTop = 0;
 			$('#rsvp-' + i).attr('style', 'width: ' + colWidth + 'px; position: absolute; left: ' + left + 'px; top: ' + parseInt(lastInColTop) + 'px');
 		}
-		console.log('item ' + i + ': ' + lastInColHeight + ', ' + lastInColTop);
 	}	
 }
 
@@ -149,7 +151,9 @@ function viewRsvps(eventId) {
 $(document).ready(function() {
 	var eventId = $.urlParam('eventId');
 	var oldURL = document.referrer;
-
+	$('body').tooltip({
+		selector: '[data-toggle=tooltip]'
+	});
 	if(eventId) {
 		getEventInfo(eventId);
 		
