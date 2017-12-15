@@ -141,6 +141,9 @@ function viewRsvps(eventId) {
 					if (userSnap.val()) {
 						var message = snapshot.val().message != '<p><br></p>' ? snapshot.val().message : '<p><em>(This person is no fun and didn\'t leave a message.)</em></p>';
 						buildItem(userSnap.val().name, userSnap.val().photoUrl, snapshot.val().timestamp, message, $('.rsvp-item').length);
+						setTimeout ( function () {
+							positionItems($('.rsvp-item').length);
+						}, 1);
 					}
 				});
 			}
