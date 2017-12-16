@@ -40,6 +40,8 @@ a {
 .nav.navbar-nav > li a {
     height: 57px;
     padding-top: 18px;
+    font-weight: bold;
+    text-decoration: none;
 }
 
 .popover{
@@ -52,13 +54,8 @@ h1.navbar-brand {
 	padding: 18px 0 15px 0;
     font-size: 30px;
     height: 57px;
-}
-
-h1.navbar-brand > a,
-h1.navbar-brand > a:hover {
-    color: #fff;
+    color: #fff !important;
     margin-right: 20px;
-	text-decoration: none;
 }
 
 #user {
@@ -153,7 +150,6 @@ p {
 }
 
 .navbar-collapse {
-    background-color: #222;
     max-height: 57px !important;
     margin: 0;
     padding: 0;
@@ -176,17 +172,8 @@ p {
 
 .search-input {
     font-size: 20px !important;
-    padding: 20px 15px !important;
-}
-
-.sub-search {
-    padding-bottom: 20px;
-    float: right;
-}
-
-.sub-search-input {
-    font-size: 16px !important;
-    padding: 18px 15px !important;
+    padding: 5px 15px !important;
+    height: auto;
 }
 
 .btn-home-search {
@@ -209,11 +196,6 @@ p {
     padding: 0 !important;
 }
 
-.sign-out {
-    cursor: pointer;
-    text-decoration: underline;
-}
-
 .user-info {
   vertical-align: middle;
   float: right;
@@ -224,9 +206,12 @@ p {
 
 .sign-out {
     color: #000 !important;
+    cursor: pointer;
     display: inline !important;
     margin: 0 !important;
     padding: 0 !important;
+    font-weight: normal !important;
+    text-decoration: underline !important;
 }
 
 .logo {
@@ -252,8 +237,7 @@ p {
     margin-bottom: 15px;
 }
 
-.btn-home,
-.btn-sub {
+.btn-home {
     background: #7f8e99;
     background-image: linear-gradient(to bottom, #7f8e99, #637079);
     border-radius: 4px;
@@ -263,18 +247,6 @@ p {
     border: solid #41494e 1px;
     text-decoration: none;
 }
-
-.btn-sub {
-    font-size: 16px;
-    padding: 7px 10px;
-}
-  
-.btn-home:hover,
-.btn-sub:hover {
-    background: #7fa0b8;
-    background-image: linear-gradient(to bottom, #7fa0b8, #5d8099);
-}
-
 .btn-rsvp {
     background: #7fa0b8;
     background-image: linear-gradient(to bottom, #7fa0b8, #5d8099);
@@ -522,15 +494,92 @@ footer {
     padding: 10px 0;
 }
 
-@media screen and (max-width: 767px) {
+ .navbar-collapse {
+    position: relative;
+    padding-top: 30px !important;
+    max-height: 270px;
+}
+.navbar-collapse form[role="search"] {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
+    z-index: 0;
+}
+.navbar-collapse form[role="search"] button,
+.navbar-collapse form[role="search"] input {
+    padding: 8px 12px;
+    border-radius: 0px;
+    border-width: 0px;
+    color: #fff;
+    background-color: #222;
+    border-color: #666;
+    box-shadow: none;
+    outline: none;
+}
+.navbar-collapse form[role="search"] input {
+    padding: 16px 12px;
+    font-size: 16px;
+    font-style: italic;
+    color: #fff;
+    box-shadow: none;
+}
+.navbar-collapse form[role="search"] button[type="reset"] {
+    display: none;
+}
+
+.user-info {
+    margin-right: 5px;
+}
+
+
+
+@media (min-width: 768px) {
+    .input-group {
+        height: 57px !important;
+        width: 125% !important;  /*  this hack sucks, but there was no other way */
+    }
+    .navbar-collapse {
+        padding-top: 0px !important;
+        padding-right: 38px !important;
+    }
+    .navbar-collapse form[role="search"] {
+        width: 38px;
+    }
+    .navbar-collapse form[role="search"] button,
+    .navbar-collapse form[role="search"] input {
+        padding: 15px 12px;
+    }
+    .navbar-collapse form[role="search"] input {
+        font-size: 16px;
+        opacity: 0;
+        display: none;
+        height: 57px;
+        width: 100% !important;
+    }
+    .navbar-collapse form[role="search"].active {
+        width: 100%;
+    }
+    .navbar-collapse form[role="search"].active button,
+    .navbar-collapse form[role="search"].active input {
+        display: table-cell;
+        opacity: 1;
+    }
+    .navbar-collapse form[role="search"].active input {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .input-group {
+        width: 100% !important;
+    }
     body {
         overflow-y: scroll;
     }
-    .sub-search {
-        float: none;
-    }
-    h1.navbar-brand > a,
-	h1.navbar-brand > a:hover {
+    h1.navbar-brand {
 		padding-left: 20px;
 
     }
@@ -541,6 +590,7 @@ footer {
         margin-left: 15px !important;
     }
     .navbar-collapse {
+        background-color: #222;
         max-height: 340px !important;
         overflow-x: hidden;
     }

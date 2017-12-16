@@ -11,7 +11,7 @@
     <meta name="google-signin-scope" content="profile email">
     <meta name="google-signin-client_id" content="725149234874-5pcbriu0k6nsqe1mglf4oonqcel1ibpn.apps.googleusercontent.com">
     <title>For the Tour</title>
-    <script src="https://use.fontawesome.com/6207f4ce66.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.1/js/all.js"></script>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -31,16 +31,32 @@
                                 <span class="sr-only">Toggle navigation</span>
                                 <span class="navbar-button-text">Menu</span>
                             </button>
-                            <h1 class="navbar-brand"><a href=".">For the Tour</a></h1>
+                            <h1 class="navbar-brand">For the Tour</h1>
                         </div>
                         <div class="collapse navbar-collapse" id="nav-items">
-                            <ul class="nav navbar-nav hidden" id="loginRSVPs">
-                                <li><a href="my-rsvps.html">My RSVPs</a></li>
+                            <ul class="nav navbar-nav">
+                                <li><a href=".">Home</a></li>
+                                <li id="loginRSVPs" class="hidden"><a href="my-rsvps.html">My RSVPs</a></li>
                             </ul>
                             <ul id="user" class="nav navbar-nav navbar-text navbar-right">
                                 <li><div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div></li>
                                 <li class="user-info"></li>
                             </ul>
+                            <form id="subSearch" class="navbar-form sub-search" role="search">
+                                <div class="input-group">
+                                    <input name="b" id="bandName" type="text" class="form-control" placeholder="Enter a band name..." required pattern="^(.*?)([A-Za-z0-9!-+&@']+)$">
+                                    <span class="input-group-btn">
+                                        <button type="reset" class="btn btn-default">
+                                            <i class="fas fa-times"></i>
+                                            <span class="sr-only">Close</span>
+                                        </button>
+                                        <button type="submit" class="btn btn-default">
+                                            <i class="fas fa-search"></i>
+                                            <span class="sr-only">Search</span>
+                                        </button>
+                                    </span>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
