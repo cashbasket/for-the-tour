@@ -51,11 +51,19 @@ a {
 }
 
 h1.navbar-brand {
+    height: 57px;
+    padding-left: 0;
+    padding-top: 18.5px;
+}
+
+h1.navbar-brand a,
+h1.navbar-brand a:hover {
 	padding: 18px 0 15px 0;
     font-size: 30px;
     height: 57px;
     color: #fff !important;
     margin-right: 20px;
+    text-decoration: none;
 }
 
 #user {
@@ -531,7 +539,7 @@ footer {
 }
 
 .user-info {
-    margin-right: 5px;
+    margin-left: 5px;
 }
 
 
@@ -539,11 +547,14 @@ footer {
 @media (min-width: 768px) {
     .input-group {
         height: 57px !important;
-        width: 125% !important;  /*  this hack sucks, but there was no other way */
+        width: 107% !important;
+        padding-left: 25% !important;  /* this hack sucks, but there was no other way */
     }
     .navbar-collapse {
         padding-top: 0px !important;
+        padding-left: 25% !important;
         padding-right: 38px !important;
+        float: right;
     }
     .navbar-collapse form[role="search"] {
         width: 38px;
@@ -604,7 +615,9 @@ footer {
 }
 
 @media screen and (max-width: 480px) {
-	h1.navbar-brand {
-		font-size: 24px;
+    h1.navbar-brand a,
+    h1.navbar-brand a:hover {
+        font-size: 24px;
+        margin-right: 0;
 	}
 }
