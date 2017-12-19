@@ -34,28 +34,24 @@
                             <h1 class="navbar-brand"><a href=".">For the Tour</a></h1>
                         </div>
                         <div class="collapse navbar-collapse" id="nav-items">
-                            <ul class="nav navbar-nav">
-                                <li id="loginRSVPs" class="hidden"><a href="my-rsvps.html">My RSVPs</a></li>
-                            </ul>
                             <ul id="user" class="nav navbar-nav navbar-text navbar-right">
+                                <li>
+                                    <form id="subSearch" class="navbar-form sub-search" role="search" action="search.html">
+                                        <div class="input-group">
+                                            <input name="b" id="bandName" type="text" class="form-control" placeholder="Enter a band name..." required pattern="^(.*?)([A-Za-z0-9!-+&@']+)$">
+                                            <span class="input-group-btn">
+                                                <button type="submit" class="btn btn-search">
+                                                    <i class="fas fa-search"></i>
+                                                    <span class="sr-only">Search</span>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </form>
+                                </li>
+                                <li id="loginRSVPs" class="hidden"><a href="my-rsvps.html">My RSVPs</a></li>
                                 <li><div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div></li>
                                 <li class="user-info"></li>
                             </ul>
-                            <form id="subSearch" class="navbar-form sub-search" role="search" action="search.html">
-                                <div class="input-group">
-                                    <input name="b" id="bandName" type="text" class="form-control" placeholder="Enter a band name..." required pattern="^(.*?)([A-Za-z0-9!-+&@']+)$">
-                                    <span class="input-group-btn">
-                                        <button type="reset" class="btn btn-default">
-                                            <i class="fas fa-times"></i>
-                                            <span class="sr-only">Close</span>
-                                        </button>
-                                        <button type="submit" class="btn btn-default">
-                                            <i class="fas fa-search"></i>
-                                            <span class="sr-only">Search</span>
-                                        </button>
-                                    </span>
-                                </div>
-                            </form>
                         </div>
                     </div>
                 </div>
