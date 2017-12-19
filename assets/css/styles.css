@@ -95,7 +95,7 @@ h1.navbar-brand a:hover {
 #nav-items a:hover,
 .navbar-toggle:focus,
 .navbar-toggle:hover {
-	background-color: #4c687c;
+	color: #cccccc;
 }
 
 #loginRSVPs a {
