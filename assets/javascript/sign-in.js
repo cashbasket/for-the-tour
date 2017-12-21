@@ -71,7 +71,8 @@ function onSignIn(googleUser) {
 		$('#loginRSVPs').removeClass('hidden');
 		$('#addToCalendarLink').removeClass('hidden');
 		var calendarLink = $('<a class="add-to-calendar">').text('Add to Google Calendar');
-		$('#addToCalendarLink').append('<i class="far fa-calendar-plus"></i> ').append(calendarLink);
+		if($('#addToCalendarLink').text() === '')
+			$('#addToCalendarLink').append('<i class="far fa-calendar-plus"></i> ').append(calendarLink);
 	}
 }
 function isUserEqual(googleUser, firebaseUser) {
