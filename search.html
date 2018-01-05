@@ -36,10 +36,21 @@
                             <h1 class="navbar-brand"><a href=".">For the Tour</a></h1>
                         </div>
                         <div class="collapse navbar-collapse" id="nav-items">
-                            <ul class="nav navbar-nav hidden" id="loginRSVPs">
-                                <li><a href="my-rsvps.html">My RSVPs</a></li>
-                            </ul>
                             <ul id="user" class="nav navbar-nav navbar-text navbar-right">
+                                <li>
+                                    <form id="subSearch" class="navbar-form sub-search" role="search" action="search.html">
+                                        <div class="input-group">
+                                            <input name="b" id="bandName" type="text" class="form-control" placeholder="Enter a band name..." required pattern="^(.*?)([^\s]+)$">
+                                            <span class="input-group-btn">
+                                                <button type="submit" class="btn btn-search">
+                                                    <i class="fas fa-search"></i>
+                                                    <span class="sr-only">Search</span>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </form>
+                                </li>
+                                <li id="loginRSVPs" class="hidden"><a href="my-rsvps.html">My RSVPs</a></li>
                                 <li><div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div></li>
                                 <li class="user-info"></li>
                             </ul>
@@ -55,19 +66,9 @@
             Searching
         </div>
         <div id="containerHead" class="row hidden">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div id="resultsHead">
                     <h2>Results for "<span id="result-header-query"></span>"</h2>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div id="subSearch" class="sub-search">
-                    <form class="searchForm form-inline">
-                        <div class="form-group">
-                            <input type="text" name="b" id="subBandName" placeholder="Enter a band name..." class="form-control search-input sub-search-input" required pattern="^(.*?)([A-Za-z0-9!-+&@']+)$" />
-                        </div>
-                        <button type="submit" class="btn-sub">Search Again</button>
-                    </form>
                 </div>
             </div>
         </div>
@@ -107,8 +108,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div id="venue-website"></div>
-                                        <div id="addToCalendarLink" class="hidden">
-                                        </div>
+                                        <div id="addToCalendarLink" class="hidden"></div>
                                         <div id="eventAdded" class="hidden">
                                             <strong class="blue">Event added!</strong>
                                         </div>
@@ -116,7 +116,8 @@
                                 </div>
                             </div>
                             <div id="signInToRSVP">
-                                <h2 class="blue">You must sign in to RSVP.</h2>
+								<h2 class="blue">You must sign in to RSVP.</h2>
+								<div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
                             </div>
                             <div id="alreadyRSVPed" class="hidden">
                                 <h2 class="blue">You have already RSVPed for this event.</h2>

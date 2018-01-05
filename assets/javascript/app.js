@@ -3,6 +3,7 @@ var currentUser, userId;
 var database = firebase.database();
 var rsvpsRef = database.ref('/rsvps/');
 var usersRef = database.ref('/users');
+var infowindow;
 
 firebase.auth().onAuthStateChanged(function(user) {
 	if (user) {
@@ -209,6 +210,10 @@ function initialize() {
 		zoom: 2,
 		center: new google.maps.LatLng(20, 0)
 	});
+	infowindow = new google.maps.InfoWindow({
+		content: '',
+		maxWidth: 200
+	});
 	google.maps.event.addListener(map, 'bounds_changed', function() {
 		bounds = map.getBounds();
 		ne = bounds.getNorthEast();
@@ -220,10 +225,6 @@ function addMarker(location, title, info) {
 		position: location,
 		map: map,
 		title: title
-	});
-	var infowindow = new google.maps.InfoWindow({
-		content: info,
-		maxWidth: 200
 	});
 	google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){ 
 		return function() {

@@ -9,6 +9,15 @@ a {
     text-decoration: underline;
 }
 
+input.form-control,input.form-control:focus {
+    border: none;
+    box-shadow: none;
+   -webkit-box-shadow: none;
+   -moz-box-shadow: none;
+   -moz-transition: none;
+   -webkit-transition: none;
+}
+
 #map {
     width: 100%;
     height: 400px;
@@ -34,35 +43,41 @@ a {
 }
 
 .g-signin2 {
-    padding-top: 5px;
+    margin-top: 10px;
 }
 
 .nav.navbar-nav > li a {
     height: 57px;
+    margin: 0 !important;
     padding-top: 18px;
+    font-weight: bold;
+    text-decoration: none;
 }
 
-.popover{
+.popover {
     color: #000;
     width:200px;
     height:50px;    
 }
 
 h1.navbar-brand {
-	padding: 18px 0 15px 0;
-    font-size: 30px;
     height: 57px;
+    padding-left: 0;
+    padding-top: 18.5px;
 }
 
 h1.navbar-brand > a,
 h1.navbar-brand > a:hover {
-    color: #fff;
+    height: 57px !important;
+	padding: 18px 0 0 0;
+    font-size: 30px;
+    color: #fff !important;
     margin-right: 20px;
-	text-decoration: none;
+    text-decoration: none;
 }
 
 #user {
-    margin: 5px 0 !important;
+    margin: 0 !important;
 }
 
 #user img {
@@ -80,7 +95,7 @@ h1.navbar-brand > a:hover {
 #nav-items a:hover,
 .navbar-toggle:focus,
 .navbar-toggle:hover {
-	background-color: #4c687c;
+	color: #cccccc;
 }
 
 #loginRSVPs a {
@@ -153,7 +168,6 @@ p {
 }
 
 .navbar-collapse {
-    background-color: #222;
     max-height: 57px !important;
     margin: 0;
     padding: 0;
@@ -176,17 +190,8 @@ p {
 
 .search-input {
     font-size: 20px !important;
-    padding: 20px 15px !important;
-}
-
-.sub-search {
-    padding-bottom: 20px;
-    float: right;
-}
-
-.sub-search-input {
-    font-size: 16px !important;
-    padding: 18px 15px !important;
+    padding: 5px 15px !important;
+    height: auto;
 }
 
 .btn-home-search {
@@ -209,24 +214,25 @@ p {
     padding: 0 !important;
 }
 
-.sign-out {
-    cursor: pointer;
-    text-decoration: underline;
+.user-info {
+    float: right;
+    color: white;
+    font-family: 'Roboto';
+    margin-top: 5px;
 }
 
-.user-info {
-  vertical-align: middle;
-  float: right;
-  color: white;
-  font-family: 'Roboto';
-
+.sub-search .input-group {
+    margin-top: 5px;
 }
 
 .sign-out {
     color: #000 !important;
+    cursor: pointer;
     display: inline !important;
     margin: 0 !important;
     padding: 0 !important;
+    font-weight: normal !important;
+    text-decoration: underline !important;
 }
 
 .logo {
@@ -252,8 +258,7 @@ p {
     margin-bottom: 15px;
 }
 
-.btn-home,
-.btn-sub {
+.btn-home {
     background: #7f8e99;
     background-image: linear-gradient(to bottom, #7f8e99, #637079);
     border-radius: 4px;
@@ -263,18 +268,6 @@ p {
     border: solid #41494e 1px;
     text-decoration: none;
 }
-
-.btn-sub {
-    font-size: 16px;
-    padding: 7px 10px;
-}
-  
-.btn-home:hover,
-.btn-sub:hover {
-    background: #7fa0b8;
-    background-image: linear-gradient(to bottom, #7fa0b8, #5d8099);
-}
-
 .btn-rsvp {
     background: #7fa0b8;
     background-image: linear-gradient(to bottom, #7fa0b8, #5d8099);
@@ -325,7 +318,7 @@ p {
 }
 
 .ql-container {
-    font-size: 16px;
+    font-size: 16px !important;
 }
 
 .panel-event {
@@ -443,6 +436,15 @@ ol {
     color: #ff0000;
 }
 
+.edit-icon-div {
+    cursor: pointer;
+    margin: 0 0 5px 5px;
+}
+
+.edit-icon-div a {
+    text-decoration: none;
+}
+
 .rsvp-row {
     margin-bottom: 15px;
 }
@@ -485,6 +487,16 @@ div.rsvp-header > h4 {
     border-radius: 50%;
 }
 
+.my-rsvp-title {
+    font-family: 'Fira Sans Condensed', sans-serif;
+    font-weight: bold;
+    font-size: 1.25em;
+}
+
+.rsvp-text {
+    margin-top: 10px;
+}
+
 .rsvp-img {
     width: 75px;
     height: 75px;
@@ -503,15 +515,40 @@ footer {
     padding: 10px 0;
 }
 
-@media screen and (max-width: 767px) {
+.input-group-btn>.btn.btn-default {
+    border-left: none;
+}
+
+.btn-search {
+    background-color: #fff;
+}
+
+.sub-search {
+    height: 34px !important;
+    margin-top: 6.5px !important;
+    margin-bottom: 0 !important;
+}
+
+@media screen and (max-width: 768px) {
+    .sub-search{
+        margin-top: 0 !important;
+        padding-top: 0;
+    }
+    .user-info {
+        margin-top: 0;
+    }
+    
+    .sub-search .input-group {
+        margin-top: 0;
+    }
+
+    .sub-search .input-group {
+        padding: 0 15px 0 15px;
+    }
     body {
         overflow-y: scroll;
     }
-    .sub-search {
-        float: none;
-    }
-    h1.navbar-brand > a,
-	h1.navbar-brand > a:hover {
+    h1.navbar-brand {
 		padding-left: 20px;
 
     }
@@ -522,11 +559,9 @@ footer {
         margin-left: 15px !important;
     }
     .navbar-collapse {
+        background-color: #222;
         max-height: 340px !important;
         overflow-x: hidden;
-    }
-    .navbar-nav a {
-        margin-left: 15px;
     }
     .user-info {
         margin-right: 15px;
@@ -535,7 +570,9 @@ footer {
 }
 
 @media screen and (max-width: 480px) {
-	h1.navbar-brand {
-		font-size: 24px;
+    h1.navbar-brand a,
+    h1.navbar-brand a:hover {
+        font-size: 24px;
+        margin-right: 0;
 	}
 }

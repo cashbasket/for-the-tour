@@ -33,10 +33,8 @@
                             </button>
                         </div>
                         <div class="collapse navbar-collapse" id="nav-items">
-                            <ul class="nav navbar-nav hidden" id="loginRSVPs">
-                                <li><a href="my-rsvps.html">My RSVPs</a></li>
-                            </ul>
                             <ul id="user" class="nav navbar-nav navbar-text navbar-right">
+                                <li id="loginRSVPs" class="hidden"><a href="my-rsvps.html">My RSVPs</a></li>
                                 <li><div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div></li>
                                 <li class="user-info"></li>
                             </ul>
@@ -55,7 +53,7 @@
                 <div class="col-md-6 col-md-push-3">
                     <form class ="searchForm" action="search.html">
                         <div class="form-group">
-                            <input type="text" name="b" id="bandName" placeholder="Enter a band name..." class="form-control search-input" required pattern="^(.*?)([A-Za-z0-9!-+&@']+)$"/>
+                            <input type="text" name="b" id="bandName" placeholder="Enter a band name..." class="form-control search-input" required pattern="^(.*?)([^\s]+)$" />
                         </div>
                         <button type="submit" class="btn-home">Search</button>
                     </form>
